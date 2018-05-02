@@ -1,8 +1,8 @@
 import Foundation
 
 extension _MessagePackEncoder {
-    class KeyedContainer<Key> where Key: CodingKey {
-        private var storage: [String: MessagePackEncodingContainer] = [:]
+    final class KeyedContainer<Key> where Key: CodingKey {
+        private var storage: [AnyCodingKey: MessagePackEncodingContainer] = [:]
         
         var codingPath: [CodingKey]
         var userInfo: [CodingUserInfoKey: Any]
@@ -31,30 +31,30 @@ extension _MessagePackEncoder.KeyedContainer: KeyedEncodingContainerProtocol {
     
     private func nestedSingleValueContainer(forKey key: Key) -> SingleValueEncodingContainer {
         let container = _MessagePackEncoder.SingleValueContainer(codingPath: self.nestedCodingPath(forKey: key), userInfo: self.userInfo)
-        self.storage[key.stringValue] = container
+        self.storage[AnyCodingKey(key)] = container
         return container
     }
     
     func nestedUnkeyedContainer(forKey key: Key) -> UnkeyedEncodingContainer {
         let container = _MessagePackEncoder.UnkeyedContainer(codingPath: self.nestedCodingPath(forKey: key), userInfo: self.userInfo)
-        self.storage[key.stringValue] = container
+        self.storage[AnyCodingKey(key)] = container
 
         return container
     }
     
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
         let container = _MessagePackEncoder.KeyedContainer<NestedKey>(codingPath: self.nestedCodingPath(forKey: key), userInfo: self.userInfo)
-        self.storage[key.stringValue] = container
+        self.storage[AnyCodingKey(key)] = container
 
         return KeyedEncodingContainer(container)
     }
     
     func superEncoder() -> Encoder {
-        fatalError("Unimplemented")
+        fatalError("Unimplemented") // FIXME
     }
     
     func superEncoder(forKey key: Key) -> Encoder {
-        fatalError("Unimplemented")
+        fatalError("Unimplemented") // FIXME
     }
 }
 
@@ -79,7 +79,7 @@ extension _MessagePackEncoder.KeyedContainer: MessagePackEncodingContainer {
         
         for (key, container) in self.storage {
             let keyContainer = _MessagePackEncoder.SingleValueContainer(codingPath: self.codingPath, userInfo: self.userInfo)
-            try! keyContainer.encode(key)
+            try! keyContainer.encode(key.stringValue)
             data.append(keyContainer.data)
             
             data.append(container.data)

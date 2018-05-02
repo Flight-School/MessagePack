@@ -1,23 +1,7 @@
 import Foundation
 
 extension _MessagePackEncoder {
-    class UnkeyedContainer {
-        struct Index: CodingKey {
-            var intValue: Int?
-            
-            var stringValue: String {
-                return "\(self.intValue!)"
-            }
-            
-            init?(intValue: Int) {
-                self.intValue = intValue
-            }
-            
-            init?(stringValue: String) {
-                return nil
-            }
-        }
-        
+    final class UnkeyedContainer {
         private var storage: [MessagePackEncodingContainer] = []
         
         var count: Int {
@@ -27,7 +11,7 @@ extension _MessagePackEncoder {
         var codingPath: [CodingKey]
         
         var nestedCodingPath: [CodingKey] {
-            return self.codingPath + [Index(intValue: self.count)!]
+            return self.codingPath + [AnyCodingKey(intValue: self.count)!]
         }
         
         var userInfo: [CodingUserInfoKey: Any]
@@ -72,7 +56,7 @@ extension _MessagePackEncoder.UnkeyedContainer: UnkeyedEncodingContainer {
     }
     
     func superEncoder() -> Encoder {
-        fatalError("Unimplemented")
+        fatalError("Unimplemented") // FIXME
     }
 }
 
