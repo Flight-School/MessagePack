@@ -102,84 +102,41 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         }
     }
     
-    func decode(_ type: Int.Type) throws -> Int {
+    func decode<T>(_ type: T.Type) throws -> T where T : BinaryInteger & Decodable {
         let format = try readByte()
+        var t: T?
+        
         switch format {
         case 0x00...0x7f:
-            return Int(format)
-        case 0xe0...0xff:
-            return Int(0x1f & (format - 0xe0))
-        case 0xd0:
-            return Int(try read(Int8.self))
-        case 0xd1:
-            return Int(try read(Int16.self))
-        case 0xd2:
-            return Int(try read(Int32.self))
-        case 0xd3:
-            return Int(try read(Int64.self))
-        default:
-            let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
-            throw DecodingError.typeMismatch(Int.self, context)
-        }
-    }
-
-    func decode(_ type: Int8.Type) throws -> Int8 {
-        try checkCanDecode(type, format: 0xd0)
-        return try read(type)
-    }
-
-    func decode(_ type: Int16.Type) throws -> Int16 {
-        try checkCanDecode(type, format: 0xd1)
-        return try read(type)
-    }
-
-    func decode(_ type: Int32.Type) throws -> Int32 {
-        try checkCanDecode(type, format: 0xd2)
-        return try read(type)
-    }
-
-    func decode(_ type: Int64.Type) throws -> Int64 {
-        try checkCanDecode(type, format: 0xd3)
-        return try read(type)
-    }
-    
-    func decode(_ type: UInt.Type) throws -> UInt {
-        let format = try readByte()
-        switch format {
-        case 0x00...0x7f:
-            return UInt(format)
+            t = T(format)
         case 0xcc:
-            return UInt(try read(UInt8.self))
+            t = T(exactly: try read(UInt8.self))
         case 0xcd:
-            return UInt(try read(UInt16.self))
+            t = T(exactly: try read(UInt16.self))
         case 0xce:
-            return UInt(try read(UInt32.self))
+            t = T(exactly: try read(UInt32.self))
         case 0xcf:
-            return UInt(try read(UInt64.self))
+            t = T(exactly: try read(UInt64.self))
+        case 0xd0:
+            t = T(exactly: try read(Int8.self))
+        case 0xd1:
+            t = T(exactly: try read(Int16.self))
+        case 0xd2:
+            t = T(exactly: try read(Int32.self))
+        case 0xd3:
+            t = T(exactly: try read(Int64.self))
+        case 0xe0...0xff:
+            t = T(exactly: 0x1f & (format - 0xe0))
         default:
-            let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
-            throw DecodingError.typeMismatch(UInt.self, context)
+            t = nil
         }
-    }
-    
-    func decode(_ type: UInt8.Type) throws -> UInt8 {
-        try checkCanDecode(type, format: 0xcc)
-        return try read(type)
-    }
-    
-    func decode(_ type: UInt16.Type) throws -> UInt16 {
-        try checkCanDecode(type, format: 0xcd)
-        return try read(type)
-    }
-    
-    func decode(_ type: UInt32.Type) throws -> UInt32 {
-        try checkCanDecode(type, format: 0xce)
-        return try read(type)
-    }
-    
-    func decode(_ type: UInt64.Type) throws -> UInt64 {
-        try checkCanDecode(type, format: 0xcf)
-        return try read(type)
+        
+        guard let value = t else {
+            let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
+            throw DecodingError.typeMismatch(T.self, context)
+        }
+        
+        return value
     }
     
     func decode(_ type: Data.Type) throws -> Data {

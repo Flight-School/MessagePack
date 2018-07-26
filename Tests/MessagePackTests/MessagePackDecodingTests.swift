@@ -26,6 +26,12 @@ class MessagePackDecodingTests: XCTestCase {
         XCTAssertEqual(value, 42)
     }
     
+    func testDecodeIntFromUInt() {
+        let data = Data(bytes: [0xCC, 0x80])
+        let value = try! decoder.decode(Int.self, from: data)
+        XCTAssertEqual(value, 128)
+    }
+    
     func testDecodeDouble() {
         let data = Data(bytes: [0xCB, 0x40, 0x09, 0x21, 0xF9, 0xF0, 0x1B, 0x86, 0x6E])
         let value = try! decoder.decode(Double.self, from: data)
