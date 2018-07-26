@@ -4,7 +4,9 @@ import Foundation
  
  */
 final public class MessagePackDecoder {
-    func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable {
+    public init() {}
+    
+    public func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable {
         let decoder = _MessagePackDecoder(data: data)
         return try T(from: decoder)
     }
