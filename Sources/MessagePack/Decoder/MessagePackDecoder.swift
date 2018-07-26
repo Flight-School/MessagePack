@@ -31,6 +31,8 @@ final public class MessagePackDecoder {
     }
 }
 
+// MARK: -
+
 final class _MessagePackDecoder {
     var codingPath: [CodingKey] = []
     

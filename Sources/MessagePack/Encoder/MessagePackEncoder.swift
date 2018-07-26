@@ -29,6 +29,8 @@ final public class MessagePackEncoder {
     }
 }
 
+// MARK: -
+
 protocol MessagePackEncodingContainer {
     var data: Data { get }
 }
