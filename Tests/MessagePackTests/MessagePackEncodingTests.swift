@@ -23,6 +23,11 @@ class MessagePackEncodingTests: XCTestCase {
         XCTAssertEqual(value, Data(bytes: [0x2A]))
     }
     
+    func testEncodeIntAsUInt() {
+        let value = try! encoder.encode(128)
+        XCTAssertEqual(value, Data(bytes: [0xCC, 0x80]))
+    }
+    
     func testEncodeDouble() {
         let value = try! encoder.encode(3.14159)
         XCTAssertEqual(value, Data(bytes: [0xCB, 0x40, 0x09, 0x21, 0xF9, 0xF0, 0x1B, 0x86, 0x6E]))
