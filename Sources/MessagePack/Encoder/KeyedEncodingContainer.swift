@@ -2,7 +2,7 @@ import Foundation
 
 extension _MessagePackEncoder {
     final class KeyedContainer<Key> where Key: CodingKey {
-        private var storage: [AnyCodingKey: MessagePackEncodingContainer] = [:]
+        private var storage: [AnyCodingKey: _MessagePackEncodingContainer] = [:]
         
         var codingPath: [CodingKey]
         var userInfo: [CodingUserInfoKey: Any]
@@ -58,7 +58,7 @@ extension _MessagePackEncoder.KeyedContainer: KeyedEncodingContainerProtocol {
     }
 }
 
-extension _MessagePackEncoder.KeyedContainer: MessagePackEncodingContainer {
+extension _MessagePackEncoder.KeyedContainer: _MessagePackEncodingContainer {
     var data: Data {
         var data = Data()
         

@@ -238,7 +238,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
     }
 }
 
-extension _MessagePackEncoder.SingleValueContainer: MessagePackEncodingContainer {
+extension _MessagePackEncoder.SingleValueContainer: _MessagePackEncodingContainer {
     var data: Data {
         return storage
     }

@@ -31,7 +31,7 @@ final public class MessagePackEncoder {
 
 // MARK: -
 
-protocol MessagePackEncodingContainer {
+protocol _MessagePackEncodingContainer {
     var data: Data { get }
 }
 
@@ -40,7 +40,7 @@ class _MessagePackEncoder {
     
     var userInfo: [CodingUserInfoKey : Any] = [:]
     
-    fileprivate var container: MessagePackEncodingContainer?
+    fileprivate var container: _MessagePackEncodingContainer?
     
     var data: Data {
         return container?.data ?? Data()

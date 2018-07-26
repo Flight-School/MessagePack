@@ -2,7 +2,7 @@ import Foundation
 
 extension _MessagePackEncoder {
     final class UnkeyedContainer {
-        private var storage: [MessagePackEncodingContainer] = []
+        private var storage: [_MessagePackEncodingContainer] = []
         
         var count: Int {
             return storage.count
@@ -60,7 +60,7 @@ extension _MessagePackEncoder.UnkeyedContainer: UnkeyedEncodingContainer {
     }
 }
 
-extension _MessagePackEncoder.UnkeyedContainer: MessagePackEncodingContainer {
+extension _MessagePackEncoder.UnkeyedContainer: _MessagePackEncodingContainer {
     var data: Data {
         var data = Data()
         
