@@ -3,7 +3,7 @@ import Foundation
 /**
  
  */
-public class MessagePackEncoder {
+final public class MessagePackEncoder {
     public init() {}
     
     public func encode(_ value: Encodable) throws -> Data {
