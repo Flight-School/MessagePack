@@ -6,8 +6,16 @@ import Foundation
 final public class MessagePackEncoder {
     public init() {}
     
+    /**
+        A dictionary you use to customize the encoding process
+        by providing contextual information.
+    */
+    public var userInfo: [CodingUserInfoKey : Any] = [:]
+
     public func encode(_ value: Encodable) throws -> Data {
         let encoder = _MessagePackEncoder()
+        encoder.userInfo = self.userInfo
+        
         try value.encode(to: encoder)
         return encoder.data
     }
