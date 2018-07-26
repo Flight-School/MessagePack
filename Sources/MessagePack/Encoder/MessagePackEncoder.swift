@@ -7,11 +7,19 @@ final public class MessagePackEncoder {
     public init() {}
     
     /**
-        A dictionary you use to customize the encoding process
-        by providing contextual information.
+     A dictionary you use to customize the encoding process
+     by providing contextual information.
     */
     public var userInfo: [CodingUserInfoKey : Any] = [:]
 
+    /**
+     Returns a MessagePack-encoded representation of the value you supply.
+     
+     - Parameters:
+        - value: The value to encode as MessagePack.
+     - Throws: `EncodingError.invalidValue(_:_:)`
+                if the value can't be encoded as a MessagePack object.
+     */
     public func encode(_ value: Encodable) throws -> Data {
         let encoder = _MessagePackEncoder()
         encoder.userInfo = self.userInfo
