@@ -1,7 +1,7 @@
 import Foundation
 
 /**
- 
+ An object that decodes instances of a data type from MessagePack objects.
  */
 final public class MessagePackDecoder {
     public init() {}
