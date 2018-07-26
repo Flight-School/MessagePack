@@ -9,7 +9,7 @@ final public class MessagePackEncoder {
     /**
      A dictionary you use to customize the encoding process
      by providing contextual information.
-    */
+     */
     public var userInfo: [CodingUserInfoKey : Any] = [:]
 
     /**
