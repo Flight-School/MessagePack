@@ -6,8 +6,16 @@ import Foundation
 final public class MessagePackDecoder {
     public init() {}
     
+    /**
+     A dictionary you use to customize the decoding process
+     by providing contextual information.
+     */
+    public var userInfo: [CodingUserInfoKey : Any] = [:]
+    
     public func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable {
         let decoder = _MessagePackDecoder(data: data)
+        decoder.userInfo = self.userInfo
+        
         return try T(from: decoder)
     }
 }
