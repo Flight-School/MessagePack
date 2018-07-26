@@ -89,36 +89,48 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         self.storage.append(contentsOf: value.bitPattern.bigEndian.bytes)
     }
     
-    func encode(_ value: Int) throws {
+    func encode<T>(_ value: T) throws where T : BinaryInteger & Encodable {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
-
-        if let int8 = Int8(exactly: value) {
-            if (int8 >= 0 && int8 <= 127) {
-                self.storage.append(UInt8(int8))
-            } else if (int8 < 0 && int8 >= -31) {
-                self.storage.append(0xe0 + (0x1f & UInt8(truncatingIfNeeded: int8)))
-            } else {
-                try encode(int8)
+        
+        if value < 0 {
+            if let int8 = Int8(exactly: value) {
+                return try encode(int8)
+            } else if let int16 = Int16(exactly: value) {
+                return try encode(int16)
+            } else if let int32 = Int32(exactly: value) {
+                return try encode(int32)
+            } else if let int64 = Int64(exactly: value) {
+                return try encode(int64)
             }
-        } else if let int16 = Int16(exactly: value) {
-            try encode(int16)
-        } else if let int32 = Int32(exactly: value) {
-            try encode(int32)
-        } else if let int64 = Int64(exactly: value) {
-            try encode(int64)
         } else {
-            let context = EncodingError.Context(codingPath: self.codingPath, debugDescription: "Cannot encode integer \(value).")
-            throw EncodingError.invalidValue(value, context)
+            if let uint8 = UInt8(exactly: value) {
+                return try encode(uint8)
+            } else if let uint16 = UInt16(exactly: value) {
+                return try encode(uint16)
+            } else if let uint32 = UInt32(exactly: value) {
+                return try encode(uint32)
+            } else if let uint64 = UInt64(exactly: value) {
+                return try encode(uint64)
+            }
         }
+        
+        let context = EncodingError.Context(codingPath: self.codingPath, debugDescription: "Cannot encode integer \(value).")
+        throw EncodingError.invalidValue(value, context)
     }
     
     func encode(_ value: Int8) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
-
-        self.storage.append(0xd0)
-        self.storage.append(contentsOf: value.bytes)
+        
+        if (value >= 0 && value <= 127) {
+            self.storage.append(UInt8(value))
+        } else if (value < 0 && value >= -31) {
+            self.storage.append(0xe0 + (0x1f & UInt8(truncatingIfNeeded: value)))
+        } else {
+            self.storage.append(0xd0)
+            self.storage.append(contentsOf: value.bytes)
+        }
     }
     
     func encode(_ value: Int16) throws {
@@ -145,34 +157,16 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         self.storage.append(contentsOf: value.bytes)
     }
     
-    func encode(_ value: UInt) throws {
-        try checkCanEncode(value: value)
-        defer { self.canEncodeNewValue = false }
-        
-        if let uint8 = UInt8(exactly: value) {
-            if (uint8 <= 127) {
-                self.storage.append(uint8)
-            } else {
-                try encode(uint8)
-            }
-        } else if let uint16 = UInt16(exactly: value) {
-            try encode(uint16)
-        } else if let uint32 = UInt32(exactly: value) {
-            try encode(uint32)
-        } else if let uint64 = UInt64(exactly: value) {
-            try encode(uint64)
-        } else {
-            let context = EncodingError.Context(codingPath: self.codingPath, debugDescription: "Cannot encode unsigned integer \(value).")
-            throw EncodingError.invalidValue(value, context)
-        }
-    }
-    
     func encode(_ value: UInt8) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
-
-        self.storage.append(0xcc)
-        self.storage.append(contentsOf: value.bytes)
+        
+        if (value <= 127) {
+            self.storage.append(value)
+        } else {
+            self.storage.append(0xcc)
+            self.storage.append(contentsOf: value.bytes)
+        }
     }
     
     func encode(_ value: UInt16) throws {
