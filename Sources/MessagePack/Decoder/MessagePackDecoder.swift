@@ -12,6 +12,17 @@ final public class MessagePackDecoder {
      */
     public var userInfo: [CodingUserInfoKey : Any] = [:]
     
+    /**
+     Returns a value of the type you specify,
+     decoded from a MessagePack object.
+     
+     - Parameters:
+        - type: The type of the value to decode
+                from the supplied MessagePack object.
+        - data: The MessagePack object to decode.
+     - Throws: `DecodingError.dataCorrupted(_:)`
+               if the data is not valid MessagePack.
+     */
     public func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable {
         let decoder = _MessagePackDecoder(data: data)
         decoder.userInfo = self.userInfo
