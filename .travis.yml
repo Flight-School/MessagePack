@@ -1,4 +1,7 @@
 language: objective-c
 os: osx
+osx_image: xcode9.4
+env:
+  - XCWORKSPACE=MessagePack.xcworkspace XCPROJECT=MessagePack.xcodeproj XCSCHEME=MessagePack-Package
 script:
-  - xcodebuild test -project MessagePack.xcodeproj -scheme MessagePack-Package
+  - xctool -workspace $XCWORKSPACE -scheme $XCSCHEME run-tests
