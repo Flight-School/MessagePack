@@ -55,7 +55,7 @@ class MessagePackDecodingTests: XCTestCase {
         ("testDecodeTrue", testDecodeTrue),
         ("testDecodeInt", testDecodeInt),
         ("testDecodeDouble", testDecodeDouble),
-        ("testDecodeArray", testDecodeArray)
-//        ("testDecodeDictionary", testDecodeDictionary)
+        ("testDecodeArray", testDecodeArray),
+        ("testDecodeDictionary", testDecodeDictionary)
     ]
 }
