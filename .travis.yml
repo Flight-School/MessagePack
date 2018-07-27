@@ -1,3 +1,4 @@
 language: objective-c
-xcode_project: MessagePack.xcodeproj
-xcode_scheme: MessagePackTests
+os: osx
+script:
+  - xcodebuild test -project MessagePack.xcodeproj -scheme MessagePack-Package
