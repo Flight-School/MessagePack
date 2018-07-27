@@ -33,6 +33,11 @@ class MessagePackEncodingTests: XCTestCase {
         XCTAssertEqual(value, Data(bytes: [0xCB, 0x40, 0x09, 0x21, 0xF9, 0xF0, 0x1B, 0x86, 0x6E]))
     }
     
+    func testEncodeString() {
+        let value = try! encoder.encode("hello")
+        XCTAssertEqual(value, Data(bytes: [0xA5, 0x68, 0x65, 0x6C, 0x6C, 0x6F]))
+    }
+    
     func testEncodeArray() {
         let value = try! encoder.encode([1, 2, 3])
         XCTAssertEqual(value, Data(bytes: [0x93, 0x01, 0x02, 0x03]))
