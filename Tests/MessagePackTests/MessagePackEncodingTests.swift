@@ -39,8 +39,8 @@ class MessagePackEncodingTests: XCTestCase {
     }
     
     func testEncodeDictionary() {
-        let value = try! encoder.encode(["a": 1, "b": 2, "c": 3])
-        XCTAssertEqual(value, Data(bytes: [0x83, 0xA1, 0x62, 0x02, 0xA1, 0x61, 0x01, 0xA1, 0x63, 0x03]))
+        let value = try! encoder.encode(["a": 1])
+        XCTAssertEqual(value, Data(bytes: [0x81, 0xA1, 0x61, 0x01]))
     }
 
     static var allTests = [
