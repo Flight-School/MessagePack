@@ -8,6 +8,11 @@ class MessagePackEncodingTests: XCTestCase {
         self.encoder = MessagePackEncoder()
     }
     
+    func testEncodeNil() {
+        let value = try! encoder.encode(nil as Int?)
+        XCTAssertEqual(value, Data(bytes: [0xc0]))
+    }
+    
     func testEncodeFalse() {
         let value = try! encoder.encode(false)
         XCTAssertEqual(value, Data(bytes: [0xc2]))
