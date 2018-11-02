@@ -46,7 +46,7 @@ extension _MessagePackDecoder {
                     nestedContainers.append(container)
                 }
             } catch {
-                fatalError() // FIXME
+                fatalError("\(error)") // FIXME
             }
             
             self.currentIndex = 0
