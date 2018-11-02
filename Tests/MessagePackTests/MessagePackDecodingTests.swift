@@ -8,6 +8,12 @@ class MessagePackDecodingTests: XCTestCase {
         self.decoder = MessagePackDecoder()
     }
     
+    func testDecodeNil() {
+        let data = Data(bytes: [0xC0])
+        let value = try! decoder.decode(Int?.self, from: data)
+        XCTAssertNil(value)
+    }
+    
     func testDecodeFalse() {
         let data = Data(bytes: [0xc2])
         let value = try! decoder.decode(Bool.self, from: data)
