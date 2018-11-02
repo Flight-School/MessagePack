@@ -11,7 +11,7 @@ class MessagePackRoundTripTests: XCTestCase {
     }
 
     func testRoundTrip() {
-        let value = Airport(name: "Portland International Airport", iata: "PDX", icao: "KPDX", coordinates: [-122.5975, 45.5886111111111], runways: [Airport.Runway(direction: "3/21", distance: 1829, surface: .flexible)])
+        let value = Airport.example
         let encoded = try! encoder.encode(value)
         let decoded = try! decoder.decode(Airport.self, from: encoded)
         

@@ -11,9 +11,8 @@ class MessagePackPerformanceTests: XCTestCase {
     }
     
     func testPerformance() {
-        let value = Airport(name: "Portland International Airport", iata: "PDX", icao: "KPDX", coordinates: [-122.5975, 45.5886111111111], runways: [Airport.Runway(direction: "3/21", distance: 1829, surface: .flexible)])
         let count = 100
-        let values = [Airport](repeating: value, count: count)
+        let values = [Airport](repeating: .example, count: count)
         
         self.measure {
             let encoded = try! encoder.encode(values)
