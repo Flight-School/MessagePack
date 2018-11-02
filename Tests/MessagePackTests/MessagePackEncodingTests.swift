@@ -24,12 +24,12 @@ class MessagePackEncodingTests: XCTestCase {
     }
     
     func testEncodeInt() {
-        let value = try! encoder.encode(42)
+        let value = try! encoder.encode(42 as Int)
         XCTAssertEqual(value, Data(bytes: [0x2A]))
     }
     
-    func testEncodeIntAsUInt() {
-        let value = try! encoder.encode(128)
+    func testEncodeUInt() {
+        let value = try! encoder.encode(128 as UInt)
         XCTAssertEqual(value, Data(bytes: [0xCC, 0x80]))
     }
     
