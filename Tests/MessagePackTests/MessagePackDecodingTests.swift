@@ -61,13 +61,45 @@ class MessagePackDecodingTests: XCTestCase {
         let value = try! decoder.decode([String: Int].self, from: data)
         XCTAssertEqual(value, ["a": 1, "b": 2, "c": 3])
     }
+    
+    func testDecodeData() {
+        let data = Data(bytes: [0xC4, 0x05, 0x68, 0x65, 0x6C, 0x6C, 0x6F])
+        let value = try! decoder.decode(Data.self, from: data)
+        XCTAssertEqual(value, "hello".data(using: .utf8))
+    }
+    
+    func testDecodeDate() {
+        let data = Data(bytes: [0xD6, 0xFF, 0x00, 0x00, 0x00, 0x01])
+        let date = Date(timeIntervalSince1970: 1)
+        let value = try! decoder.decode(Date.self, from: data)
+        XCTAssertEqual(value, date)
+    }
+    
+    func testDecodeArrayWithDate() {
+        let data = Data(bytes: [0x91, 0xD6, 0xFF, 0x00, 0x00, 0x00, 0x01])
+        let date = Date(timeIntervalSince1970: 1)
+        let value = try! decoder.decode([Date].self, from: data)
+        XCTAssertEqual(value, [date])
+    }
+    
+    func testDecodeDictionaryWithDate() {
+        let data = Data(bytes: [0x81, 0xA1, 0x31, 0xD6, 0xFF, 0x00, 0x00, 0x00, 0x01])
+        let date = Date(timeIntervalSince1970: 1)
+        let value = try! decoder.decode([String: Date].self, from: data)
+        XCTAssertEqual(value, ["1": date])
+    }
 
     static var allTests = [
+        ("testDecodeNil", testDecodeNil),
         ("testDecodeFalse", testDecodeFalse),
         ("testDecodeTrue", testDecodeTrue),
         ("testDecodeInt", testDecodeInt),
+        ("testDecodeUInt", testDecodeUInt),
+        ("testDecodeFloat", testDecodeFloat),
         ("testDecodeDouble", testDecodeDouble),
         ("testDecodeArray", testDecodeArray),
-        ("testDecodeDictionary", testDecodeDictionary)
+        ("testDecodeDictionary", testDecodeDictionary),
+        ("testDecodeData", testDecodeData),
+        ("testDecodeDate", testDecodeDate)
     ]
 }

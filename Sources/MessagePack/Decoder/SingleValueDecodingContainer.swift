@@ -139,6 +139,37 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         return value
     }
     
+    func decode(_ type: Date.Type) throws -> Date {
+        let format = try readByte()
+        
+        var seconds: TimeInterval
+        var nanoseconds: TimeInterval
+        
+        switch format {
+        case 0xd6:
+            _ = try read(Int8.self) // -1
+            nanoseconds = 0
+            seconds = TimeInterval(try read(UInt32.self))
+        case 0xd7:
+            _ = try read(Int8.self) // -1
+            let bitPattern = try read(UInt64.self)
+            nanoseconds = TimeInterval(UInt32(bitPattern >> 34))
+            seconds = TimeInterval(UInt32(bitPattern & 0x3f_ff_ff_ff))
+        case 0xd8:
+            _ = try read(Int8.self) // 12
+            _ = try read(Int8.self) // -1
+            nanoseconds = TimeInterval(try read(UInt32.self))
+            seconds = TimeInterval(try read(Int64.self))
+        default:
+            let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
+            throw DecodingError.typeMismatch(Double.self, context)
+        }
+        
+        let timeInterval = TimeInterval(seconds) + nanoseconds / Double(NSEC_PER_SEC)
+        
+        return Date(timeIntervalSince1970: timeInterval)
+    }
+    
     func decode(_ type: Data.Type) throws -> Data {
         let length: Int
         let format = try readByte()
@@ -158,13 +189,20 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
     }
     
     func decode<T>(_ type: T.Type) throws -> T where T : Decodable {
-        let decoder = _MessagePackDecoder(data: self.data)
-        let value = try T(from: decoder)
-        if let nextIndex = decoder.container?.index {
-            self.index = nextIndex
+        switch type {
+        case is Data.Type:
+            return try decode(Data.self) as! T
+        case is Date.Type:
+            return try decode(Date.self) as! T
+        default:
+            let decoder = _MessagePackDecoder(data: self.data)
+            let value = try T(from: decoder)
+            if let nextIndex = decoder.container?.index {
+                self.index = nextIndex
+            }
+            
+            return value
         }
-        
-        return value
     }
 }
 

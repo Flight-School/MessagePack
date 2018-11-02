@@ -101,8 +101,8 @@ extension _MessagePackDecoder.KeyedContainer: KeyedDecodingContainerProtocol {
         try checkCanDecodeValue(forKey: key)
         
         let container = self.nestedContainers[key.stringValue]!
-        let decoder = _MessagePackDecoder(data: container.data)
-        let value = try T(from: decoder)
+        let decoder = MessagePackDecoder()
+        let value = try decoder.decode(T.self, from: container.data)
         
         return value
     }

@@ -90,13 +90,12 @@ extension _MessagePackDecoder.UnkeyedContainer: UnkeyedDecodingContainer {
     
     func decode<T>(_ type: T.Type) throws -> T where T : Decodable {
         try checkCanDecodeValue()
-
         defer { self.currentIndex += 1 }
         
         let container = self.nestedContainers[self.currentIndex]
-        let decoder = _MessagePackDecoder(data: container.data)
-        let value = try T(from: decoder)
-        
+        let decoder = MessagePackDecoder()
+        let value = try decoder.decode(T.self, from: container.data)
+
         return value
     }
     
@@ -126,7 +125,6 @@ extension _MessagePackDecoder.UnkeyedContainer: UnkeyedDecodingContainer {
 extension _MessagePackDecoder.UnkeyedContainer {
     func decodeContainer() throws -> MessagePackDecodingContainer {
         try checkCanDecodeValue()
-        
         defer { self.currentIndex += 1 }
         
         let startIndex = self.index
@@ -142,10 +140,14 @@ extension _MessagePackDecoder.UnkeyedContainer {
             length = 1
         case 0xcd, 0xd1, 0xd5:
             length = 2
-        case 0xca, 0xce, 0xd2, 0xd6:
+        case 0xca, 0xce, 0xd2:
             length = 4
-        case 0xcb, 0xcf, 0xd3, 0xd7:
+        case 0xcb, 0xcf, 0xd3:
             length = 8
+        case 0xd6:
+            length = 5
+        case 0xd7:
+            length = 9
         case 0xd8:
             length = 16
         case 0xa0...0xbf:

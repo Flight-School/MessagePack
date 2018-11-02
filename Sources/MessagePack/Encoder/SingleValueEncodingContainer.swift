@@ -197,24 +197,42 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
         
-        self.storage.append(0xd6)
-        try encode(-1 as Int)
-        try encode(UInt32(value.timeIntervalSince1970.rounded(.down)))
+        let timeInterval = value.timeIntervalSince1970
+        let (integral, fractional) = modf(timeInterval)
+        
+        let seconds = Int64(integral)
+        let nanoseconds = UInt32(fractional * Double(NSEC_PER_SEC))
+        
+        if seconds < 0 || seconds > UInt32.max {
+            self.storage.append(0xc7)
+            self.storage.append(0x0C)
+            self.storage.append(0xFF)
+            self.storage.append(contentsOf: nanoseconds.bytes)
+            self.storage.append(contentsOf: seconds.bytes)
+        } else if nanoseconds > 0 {
+            self.storage.append(0xd7)
+            self.storage.append(0xFF)
+            self.storage.append(contentsOf: ((UInt64(nanoseconds) << 34) + UInt64(seconds)).bytes)
+        } else {
+            self.storage.append(0xd6)
+            self.storage.append(0xFF)
+            self.storage.append(contentsOf: UInt32(seconds).bytes)
+        }
     }
     
     func encode(_ value: Data) throws {
         let length = value.count
         if let uint8 = UInt8(exactly: length) {
             self.storage.append(0xc4)
-            try encode(uint8)
+            self.storage.append(uint8)
             self.storage.append(value)
         } else if let uint16 = UInt16(exactly: length) {
             self.storage.append(0xc5)
-            try encode(uint16)
+            self.storage.append(contentsOf: uint16.bytes)
             self.storage.append(value)
         } else if let uint32 = UInt32(exactly: length) {
             self.storage.append(0xc6)
-            try encode(uint32)
+            self.storage.append(contentsOf: uint32.bytes)
             self.storage.append(value)
         } else {
             let context = EncodingError.Context(codingPath: self.codingPath, debugDescription: "Cannot encode data of length \(value.count).")
@@ -225,10 +243,17 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
     func encode<T>(_ value: T) throws where T : Encodable {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
-
-        let encoder = _MessagePackEncoder()
-        try value.encode(to: encoder)
-        self.storage.append(encoder.data)
+        
+        switch value {
+        case let data as Data:
+            try self.encode(data)
+        case let date as Date:
+            try self.encode(date)
+        default:
+            let encoder = _MessagePackEncoder()
+            try value.encode(to: encoder)
+            self.storage.append(encoder.data)
+        }
     }
 }
 

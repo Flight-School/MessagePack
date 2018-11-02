@@ -24,7 +24,13 @@ final public class MessagePackEncoder {
         let encoder = _MessagePackEncoder()
         encoder.userInfo = self.userInfo
         
-        try value.encode(to: encoder)
+        switch value {
+        case let date as Date:
+            try Box<Date>(date).encode(to: encoder)
+        default:
+            try value.encode(to: encoder)
+        }
+        
         return encoder.data
     }
 }

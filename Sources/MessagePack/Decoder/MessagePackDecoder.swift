@@ -27,7 +27,16 @@ final public class MessagePackDecoder {
         let decoder = _MessagePackDecoder(data: data)
         decoder.userInfo = self.userInfo
         
-        return try T(from: decoder)
+        switch type {
+        case is Data.Type:
+            let box = try Box<Data>(from: decoder)
+            return box.value as! T
+        case is Date.Type:
+            let box = try Box<Date>(from: decoder)
+            return box.value as! T
+        default:
+            return try T(from: decoder)
+        }
     }
 }
 
