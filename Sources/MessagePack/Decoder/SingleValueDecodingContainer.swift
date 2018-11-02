@@ -75,10 +75,10 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         switch format {
         case 0xca:
             let bitPattern = try read(UInt32.self)
-            return Double(bitPattern: UInt64(bitPattern.bigEndian))
+            return Double(bitPattern: UInt64(bitPattern))
         case 0xcb:
             let bitPattern = try read(UInt64.self)
-            return Double(bitPattern: bitPattern.bigEndian)
+            return Double(bitPattern: bitPattern)
         default:
             let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
             throw DecodingError.typeMismatch(Double.self, context)
@@ -90,12 +90,12 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         switch format {
         case 0xca:
             let bitPattern = try read(UInt32.self)
-            return Float(bitPattern: bitPattern.bigEndian)
+            return Float(bitPattern: bitPattern)
         case 0xcb:
             guard let bitPattern = UInt32(exactly: try read(UInt32.self)) else {
                 fallthrough
             }
-            return Float(bitPattern: bitPattern.bigEndian)
+            return Float(bitPattern: bitPattern)
         default:
             let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
             throw DecodingError.typeMismatch(Double.self, context)

@@ -78,7 +78,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         defer { self.canEncodeNewValue = false }
 
         self.storage.append(0xcb)
-        self.storage.append(contentsOf: value.bitPattern.bigEndian.bytes)
+        self.storage.append(contentsOf: value.bitPattern.bytes)
     }
     
     func encode(_ value: Float) throws {
@@ -86,7 +86,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         defer { self.canEncodeNewValue = false }
 
         self.storage.append(0xca)
-        self.storage.append(contentsOf: value.bitPattern.bigEndian.bytes)
+        self.storage.append(contentsOf: value.bitPattern.bytes)
     }
     
     func encode<T>(_ value: T) throws where T : BinaryInteger & Encodable {
