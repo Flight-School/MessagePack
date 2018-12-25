@@ -67,11 +67,11 @@ extension _MessagePackEncoder.KeyedContainer: _MessagePackEncodingContainer {
             if length <= 15 {
                 data.append(0x80 + UInt8(length))
             } else {
-                data.append(0xdc)
+                data.append(0xde)
                 data.append(contentsOf: uint16.bytes)
             }
         } else if let uint32 = UInt32(exactly: length) {
-            data.append(0xdd)
+            data.append(0xdf)
             data.append(contentsOf: uint32.bytes)
         } else {
             fatalError()

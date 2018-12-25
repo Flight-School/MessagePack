@@ -73,7 +73,7 @@ extension _MessagePackEncoder.UnkeyedContainer: _MessagePackEncodingContainer {
                 data.append(contentsOf: uint16.bytes)
             }
         } else if let uint32 = UInt32(exactly: length) {
-            data.append(0xdc)
+            data.append(0xdd)
             data.append(contentsOf: uint32.bytes)
         } else {
             fatalError()
