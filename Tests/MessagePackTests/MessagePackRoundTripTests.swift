@@ -24,6 +24,34 @@ class MessagePackRoundTripTests: XCTestCase {
         XCTAssertEqual(value.runways[0].distance, decoded.runways[0].distance)
         XCTAssertEqual(value.runways[0].surface, decoded.runways[0].surface)
     }
+
+    func testRoundTripArray() {
+        let count: UInt8 = 100
+        var bytes: [UInt8] = [0xdc, 0x00, count]
+        var encoded: [Int] = []
+        for n in 1...count {
+            bytes.append(n)
+            encoded.append(Int(n))
+        }
+
+        let data = Data(bytes: bytes)
+        let decoded = try! decoder.decode([Int].self, from: data)
+        XCTAssertEqual(encoded, decoded)
+    }
+
+    func testTripDictionary() {
+        let (a, z): (UInt8, UInt8) = (0x61, 0x7a)
+        var bytes: [UInt8] = [0xde, 0x00, 0x1A]
+        var encoded: [String: Int] = [:]
+        for n in a...z {
+            bytes.append(contentsOf: [0xA1, n, n])
+            encoded[String(Unicode.Scalar(n))] = Int(n)
+        }
+
+        let data = Data(bytes: bytes)
+        let decoded = try! decoder.decode([String: Int].self, from: data)
+        XCTAssertEqual(encoded, decoded)
+    }
     
     static var allTests = [
         ("testRoundTrip", testRoundTrip)
