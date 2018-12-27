@@ -104,6 +104,8 @@ class MessagePackEncodingTests: XCTestCase {
         ("testEncodeArray", testEncodeArray),
         ("testEncodeDictionary", testEncodeDictionary),
         ("testEncodeDate", testEncodeDate),
+        ("testEncodeDistantPast", testEncodeDistantPast),
+        ("testEncodeDistantFuture", testEncodeDistantFuture),
         ("testEncodeArrayWithDate", testEncodeArrayWithDate),
         ("testEncodeDictionaryWithDate", testEncodeDictionaryWithDate)
     ]
