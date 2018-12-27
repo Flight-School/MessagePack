@@ -69,7 +69,19 @@ class MessagePackEncodingTests: XCTestCase {
         let value = try! encoder.encode(date)
         XCTAssertEqual(value, Data(bytes: [0xD6, 0xFF, 0x00, 0x00, 0x00, 0x01]))
     }
-    
+
+    func testEncodeDistantPast() {
+        let date = Date.distantPast
+        let value = try! encoder.encode(date)
+        XCTAssertEqual(value, Data(bytes: [0xC7, 0x0C, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xF1, 0x88, 0x6B, 0x66, 0x00]))
+    }
+
+    func testEncodeDistantFuture() {
+        let date = Date.distantFuture
+        let value = try! encoder.encode(date)
+        XCTAssertEqual(value, Data(bytes: [0xC7, 0x0C, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0E, 0xEC, 0x31, 0x88, 0x00]))
+    }
+
     func testEncodeArrayWithDate() {
         let date = Date(timeIntervalSince1970: 1)
         let value = try! encoder.encode([date])

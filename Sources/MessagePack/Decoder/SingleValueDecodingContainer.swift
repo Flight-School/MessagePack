@@ -155,7 +155,7 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
             let bitPattern = try read(UInt64.self)
             nanoseconds = TimeInterval(UInt32(bitPattern >> 34))
             seconds = TimeInterval(UInt32(bitPattern & 0x3f_ff_ff_ff))
-        case 0xd8:
+        case 0xc7:
             _ = try read(Int8.self) // 12
             _ = try read(Int8.self) // -1
             nanoseconds = TimeInterval(try read(UInt32.self))

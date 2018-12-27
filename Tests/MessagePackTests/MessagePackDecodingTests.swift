@@ -75,6 +75,20 @@ class MessagePackDecodingTests: XCTestCase {
         XCTAssertEqual(value, date)
     }
     
+    func testEncodeDistantPast() {
+        let data = Data(bytes: [0xC7, 0x0C, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xF1, 0x88, 0x6B, 0x66, 0x00])
+        let date = Date.distantPast
+        let value = try! decoder.decode(Date.self, from: data)
+        XCTAssertEqual(value, date)
+    }
+    
+    func testEncodeDistantFuture() {
+        let data = Data(bytes: [0xC7, 0x0C, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0E, 0xEC, 0x31, 0x88, 0x00])
+        let date = Date.distantFuture
+        let value = try! decoder.decode(Date.self, from: data)
+        XCTAssertEqual(value, date)
+    }
+    
     func testDecodeArrayWithDate() {
         let data = Data(bytes: [0x91, 0xD6, 0xFF, 0x00, 0x00, 0x00, 0x01])
         let date = Date(timeIntervalSince1970: 1)
