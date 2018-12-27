@@ -1,4 +1,4 @@
 language: objective-c
 xcode_project: MessagePack.xcodeproj
-xcode_scheme: MessagePack-Package
+xcode_scheme: MessagePack
 xcode_destination: platform=macOs
