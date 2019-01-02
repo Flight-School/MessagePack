@@ -1,5 +1,7 @@
 # MessagePack
 
+![Build Status](https://api.travis-ci.com/Flight-School/MessagePack.svg?branch=master)
+
 A [MessagePack](https://msgpack.org/) encoder and decoder for `Codable` types.
 
 This functionality is discussed in Chapter 7 of
