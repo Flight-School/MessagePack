@@ -68,6 +68,9 @@ class MessagePackRoundTripTests: XCTestCase {
     }
     
     static var allTests = [
-        ("testRoundTrip", testRoundTrip)
+        ("testRoundTrip", testRoundTrip),
+        ("testRoundTripArray", testRoundTripArray),
+        ("testRoundTripDictionary", testRoundTripDictionary),
+        ("testRoundTripDate", testRoundTripDate)
     ]
 }
