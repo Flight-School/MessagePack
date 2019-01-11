@@ -66,7 +66,14 @@ class MessagePackRoundTripTests: XCTestCase {
         let decoded = try! decoder.decode(Date.self, from: data)
         XCTAssertEqual(encoded, decoded)
     }
-    
+
+    func testRoundTripDateFailing() {
+        let originalDate = Date()
+        let encoded = try! self.encoder.encode(originalDate)
+        let decodedDate = try! self.decoder.decode(Date.self, from: encoded)
+        XCTAssertEqual(originalDate, decodedDate)
+    }
+
     static var allTests = [
         ("testRoundTrip", testRoundTrip),
         ("testRoundTripArray", testRoundTripArray),
