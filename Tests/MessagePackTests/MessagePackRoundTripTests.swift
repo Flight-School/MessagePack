@@ -14,7 +14,7 @@ class MessagePackRoundTripTests: XCTestCase {
         let value = Airport.example
         let encoded = try! encoder.encode(value)
         let decoded = try! decoder.decode(Airport.self, from: encoded)
-        
+
         XCTAssertEqual(value.name, decoded.name)
         XCTAssertEqual(value.iata, decoded.iata)
         XCTAssertEqual(value.icao, decoded.icao)
@@ -66,11 +66,19 @@ class MessagePackRoundTripTests: XCTestCase {
         let decoded = try! decoder.decode(Date.self, from: data)
         XCTAssertEqual(encoded, decoded)
     }
+
+    func testRoundTripDateWithNanoseconds() {
+        let encoded = Date()
+        let data = try! self.encoder.encode(encoded)
+        let decoded = try! self.decoder.decode(Date.self, from: data)
+        XCTAssertEqual(encoded.timeIntervalSinceReferenceDate, decoded.timeIntervalSinceReferenceDate, accuracy: 0.0001)
+    }
     
     static var allTests = [
         ("testRoundTrip", testRoundTrip),
         ("testRoundTripArray", testRoundTripArray),
         ("testRoundTripDictionary", testRoundTripDictionary),
-        ("testRoundTripDate", testRoundTripDate)
+        ("testRoundTripDate", testRoundTripDate),
+        ("testRoundTripDateWithNanoseconds", testRoundTripDateWithNanoseconds)
     ]
 }
