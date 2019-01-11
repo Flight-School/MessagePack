@@ -154,7 +154,7 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
             _ = try read(Int8.self) // -1
             let bitPattern = try read(UInt64.self)
             nanoseconds = TimeInterval(UInt32(bitPattern >> 34))
-            seconds = TimeInterval(UInt32(bitPattern & 0x3f_ff_ff_ff))
+            seconds = TimeInterval(UInt32(bitPattern & 0x03_FF_FF_FF_FF))
         case 0xc7:
             _ = try read(Int8.self) // 12
             _ = try read(Int8.self) // -1
