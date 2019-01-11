@@ -78,6 +78,7 @@ class MessagePackRoundTripTests: XCTestCase {
         ("testRoundTrip", testRoundTrip),
         ("testRoundTripArray", testRoundTripArray),
         ("testRoundTripDictionary", testRoundTripDictionary),
-        ("testRoundTripDate", testRoundTripDate)
+        ("testRoundTripDate", testRoundTripDate),
+        ("testRoundTripDateFailing", testRoundTripDateFailing),
     ]
 }
