@@ -2,5 +2,7 @@ import XCTest
 @testable import MessagePackTests
 
 XCTMain([
-    testCase(MessagePackTests.allTests),
+    testCase(MessagePackDecodingTests.allTests),
+    testCase(MessagePackEncodingTests.allTests),
+    testCase(MessagePackRoundTripTests.allTests),
 ])
