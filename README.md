@@ -1,11 +1,11 @@
 # MessagePack
 
-![Build Status](https://api.travis-ci.com/Flight-School/MessagePack.svg?branch=master)
+[![Build Status][build status badge]][build status]
 
 A [MessagePack](https://msgpack.org/) encoder and decoder for `Codable` types.
 
 This functionality is discussed in Chapter 7 of
-[Flight School Guide to Swift Codable](https://gumroad.com/l/codable).
+[Flight School Guide to Swift Codable](https://flight.school/books/codable).
 
 ## MessagePackEncoder
 
@@ -31,3 +31,6 @@ MIT
 ## Contact
 
 Mattt ([@mattt](https://twitter.com/mattt))
+
+[build status]: https://travis-ci.com/Flight-School/MessagePack
+[build status badge]: https://api.travis-ci.com/Flight-School/MessagePack.svg?branch=master
