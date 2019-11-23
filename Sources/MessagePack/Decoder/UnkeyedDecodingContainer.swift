@@ -82,10 +82,18 @@ extension _MessagePackDecoder.UnkeyedContainer: UnkeyedDecodingContainer {
         try checkCanDecodeValue()
         defer { self.currentIndex += 1 }
 
-        let container = self.nestedContainers[self.currentIndex] as! _MessagePackDecoder.SingleValueContainer
-        let value = container.decodeNil()
-        
-        return value
+        let nestedContainer = self.nestedContainers[self.currentIndex]
+
+        switch nestedContainer {
+        case let singleValueContainer as _MessagePackDecoder.SingleValueContainer:
+            return singleValueContainer.decodeNil()
+        case is _MessagePackDecoder.UnkeyedContainer,
+             is _MessagePackDecoder.KeyedContainer<AnyCodingKey>:
+            return false
+        default:
+            let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "cannot decode nil for index: \(self.currentIndex)")
+                       throw DecodingError.typeMismatch(Any?.self, context)
+        }
     }
     
     func decode<T>(_ type: T.Type) throws -> T where T : Decodable {

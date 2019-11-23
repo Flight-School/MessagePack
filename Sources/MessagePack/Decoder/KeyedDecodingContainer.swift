@@ -88,13 +88,19 @@ extension _MessagePackDecoder.KeyedContainer: KeyedDecodingContainerProtocol {
     
     func decodeNil(forKey key: Key) throws -> Bool {
         try checkCanDecodeValue(forKey: key)
-        
-        guard let singleValueContainer = self.nestedContainers[key.stringValue] as? _MessagePackDecoder.SingleValueContainer else {
+
+        let nestedContainer = self.nestedContainers[key.stringValue]
+
+        switch nestedContainer {
+        case let singleValueContainer as _MessagePackDecoder.SingleValueContainer:
+            return singleValueContainer.decodeNil()
+        case is _MessagePackDecoder.UnkeyedContainer,
+             is _MessagePackDecoder.KeyedContainer<AnyCodingKey>:
+            return false
+        default:
             let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "cannot decode nil for key: \(key)")
             throw DecodingError.typeMismatch(Any?.self, context)
         }
-        
-        return singleValueContainer.decodeNil()
     }
     
     func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T : Decodable {
