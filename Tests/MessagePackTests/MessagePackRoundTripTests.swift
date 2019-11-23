@@ -10,7 +10,7 @@ class MessagePackRoundTripTests: XCTestCase {
         self.decoder = MessagePackDecoder()
     }
 
-    func testRoundTrip() {
+    func testRoundTripAirport() {
         let value = Airport.example
         let encoded = try! encoder.encode(value)
         let decoded = try! decoder.decode(Airport.self, from: encoded)
@@ -75,7 +75,7 @@ class MessagePackRoundTripTests: XCTestCase {
     }
     
     static var allTests = [
-        ("testRoundTrip", testRoundTrip),
+        ("testRoundTripAirport", testRoundTripAirport),
         ("testRoundTripArray", testRoundTripArray),
         ("testRoundTripDictionary", testRoundTripDictionary),
         ("testRoundTripDate", testRoundTripDate),
