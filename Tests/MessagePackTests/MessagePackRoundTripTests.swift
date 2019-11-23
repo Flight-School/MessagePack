@@ -25,6 +25,28 @@ class MessagePackRoundTripTests: XCTestCase {
         XCTAssertEqual(value.runways[0].surface, decoded.runways[0].surface)
     }
 
+    func testRoundTripParachutePack() {
+        struct Parachute: Codable, Equatable {
+            enum Canopy: String, Codable, Equatable {
+                case round, cruciform, rogalloWing, annular, ramAir
+            }
+
+            let canpoy: Canopy
+            let surfaceArea: Double
+        }
+
+        struct ParachutePack: Codable, Equatable {
+            let main: Parachute?
+            let reserve: Parachute?
+        }
+
+        let value = ParachutePack(main: Parachute(canpoy: .ramAir, surfaceArea: 200), reserve: nil)
+        let encoded = try! encoder.encode(value)
+        let decoded = try! decoder.decode(ParachutePack.self, from: encoded)
+
+        XCTAssertEqual(value, decoded)
+    }
+
     func testRoundTripArray() {
         let count: UInt8 = 100
         var bytes: [UInt8] = [0xdc, 0x00, count]
