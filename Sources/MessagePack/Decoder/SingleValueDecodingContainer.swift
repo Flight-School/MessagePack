@@ -130,7 +130,7 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         case 0xd3:
             t = T(exactly: try read(Int64.self))
         case 0xe0...0xff:
-            t = T(exactly: 0x1f & (format - 0xe0))
+            t = T(exactly: Int8(bitPattern: format))
         default:
             t = nil
         }
