@@ -1,19 +1,28 @@
 import XCTest
-@testable import MessagePack
+import MessagePack
 
 class MessagePackPerformanceTests: XCTestCase {
-    var encoder: MessagePackEncoder!
-    var decoder: MessagePackDecoder!
-    
-    override func setUp() {
-        self.encoder = MessagePackEncoder()
-        self.decoder = MessagePackDecoder()
-    }
-    
-    func testPerformance() {
-        let count = 100
+    let count = 1000
+
+    func testMessagePackPerformance() {
+        let encoder = MessagePackEncoder()
+        let decoder = MessagePackDecoder()
+
         let values = [Airport](repeating: .example, count: count)
         
+        self.measure {
+            let encoded = try! encoder.encode(values)
+            let decoded = try! decoder.decode([Airport].self, from: encoded)
+            XCTAssertEqual(decoded.count, count)
+        }
+    }
+
+    func testJSONPerformance() {
+        let encoder = JSONEncoder()
+        let decoder = JSONDecoder()
+
+        let values = [Airport](repeating: .example, count: count)
+
         self.measure {
             let encoded = try! encoder.encode(values)
             let decoded = try! decoder.decode([Airport].self, from: encoded)
