@@ -1,5 +1,5 @@
 import XCTest
-@testable import MessagePack
+import MessagePack
 
 class MessagePackDecodingTests: XCTestCase {
     var decoder: MessagePackDecoder!

@@ -1,5 +1,5 @@
 import XCTest
-@testable import MessagePack
+import MessagePack
 
 class MessagePackRoundTripTests: XCTestCase {
     var encoder: MessagePackEncoder!
@@ -81,9 +81,14 @@ class MessagePackRoundTripTests: XCTestCase {
         let dateComponents = DateComponents(year: 2018, month: 4, day: 20)
         let encoded = Calendar.current.date(from: dateComponents)!
         
-        let secondsSince1970 = UInt32(encoded.timeIntervalSince1970)
-        bytes.append(contentsOf: secondsSince1970.bytes)
-        
+        var secondsSince1970 = UInt32(encoded.timeIntervalSince1970).bigEndian
+        let capacity = MemoryLayout.size(ofValue: secondsSince1970)
+        bytes.append(contentsOf: withUnsafePointer(to: &secondsSince1970) {
+            $0.withMemoryRebound(to: UInt8.self, capacity: capacity) {
+                Array(UnsafeBufferPointer(start: $0, count: capacity))
+            }
+        })
+
         let data = Data(bytes: bytes)
         let decoded = try! decoder.decode(Date.self, from: data)
         XCTAssertEqual(encoded, decoded)
