@@ -1,8 +1,1 @@
-import XCTest
-@testable import MessagePackTests
-
-XCTMain([
-    testCase(MessagePackDecodingTests.allTests),
-    testCase(MessagePackEncodingTests.allTests),
-    testCase(MessagePackRoundTripTests.allTests),
-])
+fatalError("Run with `swift test --enable-test-discovery`")

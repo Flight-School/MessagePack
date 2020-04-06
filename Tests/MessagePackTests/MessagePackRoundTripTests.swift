@@ -100,12 +100,4 @@ class MessagePackRoundTripTests: XCTestCase {
         let decoded = try! self.decoder.decode(Date.self, from: data)
         XCTAssertEqual(encoded.timeIntervalSinceReferenceDate, decoded.timeIntervalSinceReferenceDate, accuracy: 0.0001)
     }
-    
-    static var allTests = [
-        ("testRoundTripAirport", testRoundTripAirport),
-        ("testRoundTripArray", testRoundTripArray),
-        ("testRoundTripDictionary", testRoundTripDictionary),
-        ("testRoundTripDate", testRoundTripDate),
-        ("testRoundTripDateWithNanoseconds", testRoundTripDateWithNanoseconds)
-    ]
 }
