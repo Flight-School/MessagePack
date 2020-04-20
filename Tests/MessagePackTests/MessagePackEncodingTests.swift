@@ -48,14 +48,27 @@ class MessagePackEncodingTests: XCTestCase {
         XCTAssertEqual(value, Data(bytes: [0xA5, 0x68, 0x65, 0x6C, 0x6C, 0x6F]))
     }
     
-    func testEncodeArray() {
+    func testEncodeFixedArray() {
         let value = try! encoder.encode([1, 2, 3])
         XCTAssertEqual(value, Data(bytes: [0x93, 0x01, 0x02, 0x03]))
     }
+
+    func testEncodeVariableArray() {
+        let value = try! encoder.encode(Array(1...16))
+        XCTAssertEqual(value, Data(bytes: [0xdc] + [0x00, 0x10] + Array(0x01...0x10)))
+    }
     
-    func testEncodeDictionary() {
+    func testEncodeFixedDictionary() {
         let value = try! encoder.encode(["a": 1])
         XCTAssertEqual(value, Data(bytes: [0x81, 0xA1, 0x61, 0x01]))
+    }
+
+    func testEncodeVariableDictionary() {
+        let letters = "abcdefghijklmnopqrstuvwxyz".unicodeScalars
+        let dictionary = Dictionary(uniqueKeysWithValues: zip(letters.map { String($0) }, 1...26))
+        let value = try! encoder.encode(dictionary)
+        XCTAssertEqual(value.count, 81)
+        XCTAssert(value.starts(with: [0xde] + [0x00, 0x1A]))
     }
     
     func testEncodeData() {
@@ -101,8 +114,10 @@ class MessagePackEncodingTests: XCTestCase {
         ("testEncodeUInt", testEncodeUInt),
         ("testEncodeFloat", testEncodeFloat),
         ("testEncodeDouble", testEncodeDouble),
-        ("testEncodeArray", testEncodeArray),
-        ("testEncodeDictionary", testEncodeDictionary),
+        ("testEncodeFixedArray", testEncodeFixedArray),
+        ("testEncodeVariableArray", testEncodeVariableArray),
+        ("testEncodeFixedDictionary", testEncodeFixedDictionary),
+        ("testEncodeVariableDictionary", testEncodeVariableDictionary),
         ("testEncodeDate", testEncodeDate),
         ("testEncodeDistantPast", testEncodeDistantPast),
         ("testEncodeDistantFuture", testEncodeDistantFuture),

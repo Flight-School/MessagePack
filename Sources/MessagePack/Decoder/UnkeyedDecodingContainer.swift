@@ -17,7 +17,7 @@ extension _MessagePackDecoder {
             do {
                 let format = try self.readByte()
                 switch format {
-                case 0x90...0x9f :
+                case 0x90...0x9f:
                     return Int(format & 0x0F)
                 case 0xdc:
                     return Int(try read(UInt16.self))
@@ -166,13 +166,13 @@ extension _MessagePackDecoder.UnkeyedContainer {
             length = Int(try read(UInt16.self))
         case 0xc6, 0xc9, 0xdb:
             length = Int(try read(UInt32.self))
-        case 0x80...0x8f:
+        case 0x80...0x8f, 0xde, 0xdf:
             let container = _MessagePackDecoder.KeyedContainer<AnyCodingKey>(data: self.data.suffix(from: startIndex), codingPath: self.nestedCodingPath, userInfo: self.userInfo)
             _ = container.nestedContainers // FIXME
             self.index = container.index
             
             return container
-        case 0x90...0x9f:
+        case 0x90...0x9f, 0xdc, 0xdd:
             let container = _MessagePackDecoder.UnkeyedContainer(data: self.data.suffix(from: startIndex), codingPath: self.nestedCodingPath, userInfo: self.userInfo)
             _ = container.nestedContainers // FIXME
 

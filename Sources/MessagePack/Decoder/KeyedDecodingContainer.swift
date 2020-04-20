@@ -38,7 +38,7 @@ extension _MessagePackDecoder {
             do {
                 let format = try self.readByte()
                 switch format {
-                case 0x80...0x8f :
+                case 0x80...0x8f:
                     return Int(format & 0x0F)
                 case 0xde:
                     return Int(try read(UInt16.self))
@@ -113,7 +113,6 @@ extension _MessagePackDecoder.KeyedContainer: KeyedDecodingContainerProtocol {
         return value
     }
     
- 
     func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
         try checkCanDecodeValue(forKey: key)
         
