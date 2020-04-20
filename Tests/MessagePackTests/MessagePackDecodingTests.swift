@@ -56,13 +56,19 @@ class MessagePackDecodingTests: XCTestCase {
         XCTAssertEqual(value, 3.14159)
     }
     
-    func testDecodeArray() {
+    func testDecodeFixedArray() {
         let data = Data(bytes: [0x93, 0x01, 0x02, 0x03])
         let value = try! decoder.decode([Int].self, from: data)
         XCTAssertEqual(value, [1, 2, 3])
     }
 
-    func testDecodeDictionary() {
+    func testDecodeVariableArray() {
+        let data = Data(bytes: [0xdc] + [0x00, 0x10] + Array(0x01...0x10))
+        let value = try! decoder.decode([Int].self, from: data)
+        XCTAssertEqual(value, Array(1...16))
+    }
+
+    func testDecodeFixedDictionary() {
         let data = Data(bytes: [0x83, 0xA1, 0x62, 0x02, 0xA1, 0x61, 0x01, 0xA1, 0x63, 0x03])
         let value = try! decoder.decode([String: Int].self, from: data)
         XCTAssertEqual(value, ["a": 1, "b": 2, "c": 3])
@@ -117,8 +123,8 @@ class MessagePackDecodingTests: XCTestCase {
         ("testDecodeUInt", testDecodeUInt),
         ("testDecodeFloat", testDecodeFloat),
         ("testDecodeDouble", testDecodeDouble),
-        ("testDecodeArray", testDecodeArray),
-        ("testDecodeDictionary", testDecodeDictionary),
+        ("testDecodeFixedArray", testDecodeFixedArray),
+        ("testDecodeFixedDictionary", testDecodeFixedDictionary),
         ("testDecodeData", testDecodeData),
         ("testDecodeDistantPast", testDecodeDistantPast),
         ("testDecodeDistantFuture", testDecodeDistantFuture),
