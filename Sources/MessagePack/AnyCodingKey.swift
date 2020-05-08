@@ -22,7 +22,9 @@ struct AnyCodingKey: CodingKey, Equatable {
 }
 
 extension AnyCodingKey: Hashable {
+    #if swift(<4.1)
     var hashValue: Int {
         return self.intValue?.hashValue ?? self.stringValue.hashValue
     }
+    #endif
 }
