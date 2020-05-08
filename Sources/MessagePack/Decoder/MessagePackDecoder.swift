@@ -40,6 +40,16 @@ final public class MessagePackDecoder {
     }
 }
 
+// MARK: - TopLevelDecoder
+
+#if canImport(Combine)
+import Combine
+
+extension MessagePackDecoder: TopLevelDecoder {
+    public typealias Input = Data
+}
+#endif
+
 // MARK: -
 
 final class _MessagePackDecoder {
