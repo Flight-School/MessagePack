@@ -20,7 +20,7 @@ final public class MessagePackEncoder {
      - Throws: `EncodingError.invalidValue(_:_:)`
                 if the value can't be encoded as a MessagePack object.
      */
-    public func encode(_ value: Encodable) throws -> Data {
+    public func encode<T>(_ value: T) throws -> Data where T : Encodable {
         let encoder = _MessagePackEncoder()
         encoder.userInfo = self.userInfo
         
@@ -36,6 +36,16 @@ final public class MessagePackEncoder {
         return encoder.data
     }
 }
+
+// MARK: - TopLevelEncoder
+
+#if canImport(Combine)
+import Combine
+
+extension MessagePackEncoder: TopLevelEncoder {
+    public typealias Input = Data
+}
+#endif
 
 // MARK: -
 
