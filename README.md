@@ -83,5 +83,5 @@ MIT
 
 Mattt ([@mattt](https://twitter.com/mattt))
 
-[build status]: https://travis-ci.com/Flight-School/MessagePack
-[build status badge]: https://api.travis-ci.com/Flight-School/MessagePack.svg?branch=master
+[build status]: https://github.com/Flight-School/MessagePack/actions?query=workflow%3ACI
+[build status badge]: https://github.com/Flight-School/MessagePack/workflows/CI/badge.svg
