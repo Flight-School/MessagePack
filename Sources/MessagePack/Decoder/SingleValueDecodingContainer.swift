@@ -146,8 +146,8 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
     func decode(_ type: Date.Type) throws -> Date {
         let format = try readByte()
         
-        var seconds: TimeInterval
-        var nanoseconds: TimeInterval
+        let seconds: TimeInterval
+        let nanoseconds: TimeInterval
         
         switch format {
         case 0xd6:
