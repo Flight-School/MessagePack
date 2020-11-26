@@ -80,6 +80,7 @@ extension _MessagePackDecoder {
 }
 
 extension _MessagePackDecoder.UnkeyedContainer: UnkeyedDecodingContainer {
+    @usableFromInline
     func decodeNil() throws -> Bool {
         try checkCanDecodeValue()
         defer { self.currentIndex += 1 }
@@ -97,7 +98,8 @@ extension _MessagePackDecoder.UnkeyedContainer: UnkeyedDecodingContainer {
                        throw DecodingError.typeMismatch(Any?.self, context)
         }
     }
-    
+
+    @usableFromInline
     func decode<T>(_ type: T.Type) throws -> T where T : Decodable {
         try checkCanDecodeValue()
         defer { self.currentIndex += 1 }
@@ -108,7 +110,8 @@ extension _MessagePackDecoder.UnkeyedContainer: UnkeyedDecodingContainer {
 
         return value
     }
-    
+
+    @usableFromInline
     func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
         try checkCanDecodeValue()
         defer { self.currentIndex += 1 }
@@ -117,7 +120,8 @@ extension _MessagePackDecoder.UnkeyedContainer: UnkeyedDecodingContainer {
         
         return container
     }
-    
+
+    @usableFromInline
     func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
         try checkCanDecodeValue()
         defer { self.currentIndex += 1 }
@@ -127,12 +131,14 @@ extension _MessagePackDecoder.UnkeyedContainer: UnkeyedDecodingContainer {
         return KeyedDecodingContainer(container)
     }
 
+    @usableFromInline
     func superDecoder() throws -> Decoder {
         return _MessagePackDecoder(data: self.data)
     }
 }
 
 extension _MessagePackDecoder.UnkeyedContainer {
+    @usableFromInline
     func decodeContainer() throws -> MessagePackDecodingContainer {
         try checkCanDecodeValue()
         defer { self.currentIndex += 1 }

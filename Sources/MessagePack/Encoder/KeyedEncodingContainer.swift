@@ -19,40 +19,46 @@ extension _MessagePackEncoder {
 }
 
 extension _MessagePackEncoder.KeyedContainer: KeyedEncodingContainerProtocol {
+    @usableFromInline
     func encodeNil(forKey key: Key) throws {
         var container = self.nestedSingleValueContainer(forKey: key)
         try container.encodeNil()
     }
-    
+
+    @usableFromInline
     func encode<T>(_ value: T, forKey key: Key) throws where T : Encodable {
         var container = self.nestedSingleValueContainer(forKey: key)
         try container.encode(value)
     }
-    
+
     private func nestedSingleValueContainer(forKey key: Key) -> SingleValueEncodingContainer {
         let container = _MessagePackEncoder.SingleValueContainer(codingPath: self.nestedCodingPath(forKey: key), userInfo: self.userInfo)
         self.storage[AnyCodingKey(key)] = container
         return container
     }
-    
+
+    @usableFromInline
     func nestedUnkeyedContainer(forKey key: Key) -> UnkeyedEncodingContainer {
         let container = _MessagePackEncoder.UnkeyedContainer(codingPath: self.nestedCodingPath(forKey: key), userInfo: self.userInfo)
         self.storage[AnyCodingKey(key)] = container
 
         return container
     }
-    
+
+    @usableFromInline
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
         let container = _MessagePackEncoder.KeyedContainer<NestedKey>(codingPath: self.nestedCodingPath(forKey: key), userInfo: self.userInfo)
         self.storage[AnyCodingKey(key)] = container
 
         return KeyedEncodingContainer(container)
     }
-    
+
+    @usableFromInline
     func superEncoder() -> Encoder {
         fatalError("Unimplemented") // FIXME
     }
-    
+
+    @usableFromInline
     func superEncoder(forKey key: Key) -> Encoder {
         fatalError("Unimplemented") // FIXME
     }

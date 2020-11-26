@@ -33,11 +33,13 @@ extension _MessagePackDecoder {
 }
 
 extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer {    
+    @usableFromInline
     func decodeNil() -> Bool {
         let format = try? readByte()
         return format == 0xc0
     }
-    
+
+    @usableFromInline
     func decode(_ type: Bool.Type) throws -> Bool {
         let format = try readByte()
         switch format {
@@ -48,7 +50,8 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
             throw DecodingError.typeMismatch(Double.self, context)
         }
     }
-    
+
+    @usableFromInline
     func decode(_ type: String.Type) throws -> String {
         let length: Int
         let format = try readByte()
@@ -74,7 +77,8 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         
         return string
     }
-    
+
+    @usableFromInline
     func decode(_ type: Double.Type) throws -> Double {
         let format = try readByte()
         switch format {
@@ -89,7 +93,8 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
             throw DecodingError.typeMismatch(Double.self, context)
         }
     }
-    
+
+    @usableFromInline
     func decode(_ type: Float.Type) throws -> Float {
         let format = try readByte()
         switch format {
@@ -106,7 +111,8 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
             throw DecodingError.typeMismatch(Double.self, context)
         }
     }
-    
+
+    @usableFromInline
     func decode<T>(_ type: T.Type) throws -> T where T : BinaryInteger & Decodable {
         let format = try readByte()
         var t: T?
@@ -143,7 +149,8 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         
         return value
     }
-    
+
+    @usableFromInline
     func decode(_ type: Date.Type) throws -> Date {
         let format = try readByte()
         
@@ -174,7 +181,8 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         
         return Date(timeIntervalSince1970: timeInterval)
     }
-    
+
+    @usableFromInline
     func decode(_ type: Data.Type) throws -> Data {
         let length: Int
         let format = try readByte()
@@ -192,7 +200,8 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         
         return self.data.subdata(in: self.index..<self.index.advanced(by: length))
     }
-    
+
+    @usableFromInline
     func decode<T>(_ type: T.Type) throws -> T where T : Decodable {
         switch type {
         case is Data.Type:

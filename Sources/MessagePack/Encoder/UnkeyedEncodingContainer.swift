@@ -24,11 +24,13 @@ extension _MessagePackEncoder {
 }
 
 extension _MessagePackEncoder.UnkeyedContainer: UnkeyedEncodingContainer {
+    @usableFromInline
     func encodeNil() throws {
         var container = self.nestedSingleValueContainer()
         try container.encodeNil()
     }
     
+    @usableFromInline
     func encode<T>(_ value: T) throws where T : Encodable {
         var container = self.nestedSingleValueContainer()
         try container.encode(value)
@@ -41,6 +43,7 @@ extension _MessagePackEncoder.UnkeyedContainer: UnkeyedEncodingContainer {
         return container
     }
     
+    @usableFromInline
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
         let container = _MessagePackEncoder.KeyedContainer<NestedKey>(codingPath: self.nestedCodingPath, userInfo: self.userInfo)
         self.storage.append(container)
@@ -48,6 +51,7 @@ extension _MessagePackEncoder.UnkeyedContainer: UnkeyedEncodingContainer {
         return KeyedEncodingContainer(container)
     }
     
+    @usableFromInline
     func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
         let container = _MessagePackEncoder.UnkeyedContainer(codingPath: self.nestedCodingPath, userInfo: self.userInfo)
         self.storage.append(container)
@@ -55,6 +59,7 @@ extension _MessagePackEncoder.UnkeyedContainer: UnkeyedEncodingContainer {
         return container
     }
     
+    @usableFromInline
     func superEncoder() -> Encoder {
         fatalError("Unimplemented") // FIXME
     }

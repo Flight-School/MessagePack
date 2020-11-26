@@ -79,14 +79,17 @@ extension _MessagePackDecoder {
 }
 
 extension _MessagePackDecoder.KeyedContainer: KeyedDecodingContainerProtocol {
+    @usableFromInline
     var allKeys: [Key] {
         return self.nestedContainers.keys.map{ Key(stringValue: $0)! }
     }
-    
+
+    @usableFromInline
     func contains(_ key: Key) -> Bool {
         return self.nestedContainers.keys.contains(key.stringValue)
     }
-    
+
+    @usableFromInline
     func decodeNil(forKey key: Key) throws -> Bool {
         try checkCanDecodeValue(forKey: key)
 
@@ -103,7 +106,8 @@ extension _MessagePackDecoder.KeyedContainer: KeyedDecodingContainerProtocol {
             throw DecodingError.typeMismatch(Any?.self, context)
         }
     }
-    
+
+    @usableFromInline
     func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T : Decodable {
         try checkCanDecodeValue(forKey: key)
         
@@ -113,7 +117,8 @@ extension _MessagePackDecoder.KeyedContainer: KeyedDecodingContainerProtocol {
         
         return value
     }
-    
+
+    @usableFromInline
     func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
         try checkCanDecodeValue(forKey: key)
         
@@ -123,7 +128,8 @@ extension _MessagePackDecoder.KeyedContainer: KeyedDecodingContainerProtocol {
         
         return unkeyedContainer
     }
-    
+
+    @usableFromInline
     func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: Key) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
         try checkCanDecodeValue(forKey: key)
         
@@ -133,11 +139,13 @@ extension _MessagePackDecoder.KeyedContainer: KeyedDecodingContainerProtocol {
         
         return KeyedDecodingContainer(keyedContainer)
     }
-    
+
+    @usableFromInline
     func superDecoder() throws -> Decoder {
         return _MessagePackDecoder(data: self.data)
     }
-    
+
+    @usableFromInline
     func superDecoder(forKey key: Key) throws -> Decoder {
         let decoder = _MessagePackDecoder(data: self.data)
         decoder.codingPath = [key]

@@ -23,6 +23,7 @@ extension _MessagePackEncoder {
 }
 
 extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer {
+    @usableFromInline
     func encodeNil() throws {
         try checkCanEncode(value: nil)
         defer { self.canEncodeNewValue = false }
@@ -30,6 +31,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         self.storage.append(0xc0)
     }
     
+    @usableFromInline
     func encode(_ value: Bool) throws {
         try checkCanEncode(value: nil)
         defer { self.canEncodeNewValue = false }
@@ -42,6 +44,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         }
     }
     
+    @usableFromInline
     func encode(_ value: String) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -73,6 +76,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         self.storage.append(data)
     }
     
+    @usableFromInline
     func encode(_ value: Double) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -81,6 +85,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         self.storage.append(contentsOf: value.bitPattern.bytes)
     }
     
+    @usableFromInline
     func encode(_ value: Float) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -89,6 +94,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         self.storage.append(contentsOf: value.bitPattern.bytes)
     }
     
+    @usableFromInline
     func encode<T>(_ value: T) throws where T : BinaryInteger & Encodable {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -119,6 +125,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         throw EncodingError.invalidValue(value, context)
     }
     
+    @usableFromInline
     func encode(_ value: Int8) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -133,6 +140,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         }
     }
     
+    @usableFromInline
     func encode(_ value: Int16) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -141,6 +149,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         self.storage.append(contentsOf: value.bytes)
     }
     
+    @usableFromInline
     func encode(_ value: Int32) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -149,6 +158,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         self.storage.append(contentsOf: value.bytes)
     }
     
+    @usableFromInline
     func encode(_ value: Int64) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -157,6 +167,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         self.storage.append(contentsOf: value.bytes)
     }
     
+    @usableFromInline
     func encode(_ value: UInt8) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -169,6 +180,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         }
     }
     
+    @usableFromInline
     func encode(_ value: UInt16) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -177,6 +189,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         self.storage.append(contentsOf: value.bytes)
     }
     
+    @usableFromInline
     func encode(_ value: UInt32) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -185,6 +198,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         self.storage.append(contentsOf: value.bytes)
     }
     
+    @usableFromInline
     func encode(_ value: UInt64) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -193,6 +207,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         self.storage.append(contentsOf: value.bytes)
     }
     
+    @usableFromInline
     func encode(_ value: Date) throws {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -220,6 +235,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         }
     }
     
+    @usableFromInline
     func encode(_ value: Data) throws {
         let length = value.count
         if let uint8 = UInt8(exactly: length) {
@@ -240,6 +256,7 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
         }
     }
     
+    @usableFromInline
     func encode<T>(_ value: T) throws where T : Encodable {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
