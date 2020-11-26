@@ -109,7 +109,14 @@ protocol MessagePackDecodingContainer: class {
 
 extension MessagePackDecodingContainer {
     func readByte() throws -> UInt8 {
-        return try read(1).first!
+        guard self.index < self.data.endIndex else {
+            let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unexpected end of data")
+            throw DecodingError.dataCorrupted(context)
+        }
+
+        defer { self.index = self.index.advanced(by: 1) }
+
+        return self.data[self.index]
     }
     
     func read(_ length: Int) throws -> Data {
