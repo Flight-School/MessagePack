@@ -66,12 +66,8 @@ final class _MessagePackEncoder {
 }
 
 extension _MessagePackEncoder: Encoder {
-    fileprivate func assertCanCreateContainer() {
-        precondition(self.container == nil)
-    }
-    
     func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key : CodingKey {
-        assertCanCreateContainer()
+        precondition(self.container == nil)
         
         let container = KeyedContainer<Key>(codingPath: self.codingPath, userInfo: self.userInfo)
         self.container = container
@@ -80,7 +76,7 @@ extension _MessagePackEncoder: Encoder {
     }
     
     func unkeyedContainer() -> UnkeyedEncodingContainer {
-        assertCanCreateContainer()
+        precondition(self.container == nil)
         
         let container = UnkeyedContainer(codingPath: self.codingPath, userInfo: self.userInfo)
         self.container = container
@@ -89,7 +85,7 @@ extension _MessagePackEncoder: Encoder {
     }
     
     func singleValueContainer() -> SingleValueEncodingContainer {
-        assertCanCreateContainer()
+        precondition(self.container == nil)
         
         let container = SingleValueContainer(codingPath: self.codingPath, userInfo: self.userInfo)
         self.container = container
