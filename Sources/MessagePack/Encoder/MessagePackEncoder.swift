@@ -53,7 +53,7 @@ protocol _MessagePackEncodingContainer: class {
     var data: Data { get }
 }
 
-class _MessagePackEncoder {
+final class _MessagePackEncoder {
     var codingPath: [CodingKey] = []
     
     var userInfo: [CodingUserInfoKey : Any] = [:]
