@@ -49,7 +49,7 @@ extension MessagePackEncoder: TopLevelEncoder {
 
 // MARK: -
 
-protocol _MessagePackEncodingContainer {
+protocol _MessagePackEncodingContainer: class {
     var data: Data { get }
 }
 
