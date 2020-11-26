@@ -67,7 +67,8 @@ extension _MessagePackDecoder {
             self.data = data
             self.index = self.data.startIndex
         }
-        
+
+        @inlinable
         func checkCanDecodeValue(forKey key: Key) throws {
             guard self.contains(key) else {
                 let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "key not found: \(key)")

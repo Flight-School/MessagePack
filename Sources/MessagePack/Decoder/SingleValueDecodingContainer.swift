@@ -17,7 +17,8 @@ extension _MessagePackDecoder {
             self.data = data
             self.index = self.data.startIndex
         }
-        
+
+        @inlinable
         func checkCanDecode<T>(_ type: T.Type, format: UInt8) throws {
             guard self.index <= self.data.endIndex else {
                 throw DecodingError.dataCorruptedError(in: self, debugDescription: "Unexpected end of data")

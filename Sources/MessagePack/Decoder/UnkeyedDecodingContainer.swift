@@ -60,7 +60,8 @@ extension _MessagePackDecoder {
             self.data = data
             self.index = self.data.startIndex
         }
-        
+
+        @inlinable
         var isAtEnd: Bool {
             guard let count = self.count else {
                 return true
@@ -68,7 +69,8 @@ extension _MessagePackDecoder {
             
             return currentIndex >= count
         }
-        
+
+        @inlinable
         func checkCanDecodeValue() throws {
             guard !self.isAtEnd else {
                 throw DecodingError.dataCorruptedError(in: self, debugDescription: "Unexpected end of data")

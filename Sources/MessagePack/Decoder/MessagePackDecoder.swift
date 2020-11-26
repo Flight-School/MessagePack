@@ -108,6 +108,7 @@ protocol MessagePackDecodingContainer: class {
 }
 
 extension MessagePackDecodingContainer {
+    @inlinable
     func readByte() throws -> UInt8 {
         guard self.index < self.data.endIndex else {
             let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unexpected end of data")
@@ -118,7 +119,8 @@ extension MessagePackDecodingContainer {
 
         return self.data[self.index]
     }
-    
+
+    @inlinable
     func read(_ length: Int) throws -> Data {
         let nextIndex = self.index.advanced(by: length)
         guard nextIndex <= self.data.endIndex else {
@@ -129,7 +131,8 @@ extension MessagePackDecodingContainer {
         
         return self.data.subdata(in: self.index..<nextIndex)
     }
-    
+
+    @inlinable
     func read<T>(_ type: T.Type) throws -> T where T : FixedWidthInteger {
         let stride = MemoryLayout<T>.stride
         let bytes = [UInt8](try read(stride))
