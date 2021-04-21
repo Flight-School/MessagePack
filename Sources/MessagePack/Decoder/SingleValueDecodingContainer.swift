@@ -28,6 +28,10 @@ extension _MessagePackDecoder {
                 throw DecodingError.typeMismatch(type, context)
             }
         }
+
+        var nonMatchingFloatDecodingStrategy: MessagePackDecoder.NonMatchingFloatDecodingStrategy {
+            return userInfo[MessagePackDecoder.nonMatchingFloatDecodingStrategyKey] as? MessagePackDecoder.NonMatchingFloatDecodingStrategy ?? .strict
+        }
     }
 }
 
@@ -76,13 +80,22 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
     func decode(_ type: Double.Type) throws -> Double {
         let format = try readByte()
         switch format {
+        case 0xca:
+            switch nonMatchingFloatDecodingStrategy {
+            case .strict:
+                break
+            case .cast:
+                let bitPattern = try read(UInt32.self)
+                return Double(Float(bitPattern: bitPattern))
+            }
         case 0xcb:
             let bitPattern = try read(UInt64.self)
             return Double(bitPattern: bitPattern)
         default:
-            let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
-            throw DecodingError.typeMismatch(Double.self, context)
+            break
         }
+        let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
+        throw DecodingError.typeMismatch(Double.self, context)
     }
     
     func decode(_ type: Float.Type) throws -> Float {
@@ -91,10 +104,19 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         case 0xca:
             let bitPattern = try read(UInt32.self)
             return Float(bitPattern: bitPattern)
+        case 0xcb:
+            switch nonMatchingFloatDecodingStrategy {
+            case .strict:
+                break
+            case .cast:
+                let bitPattern = try read(UInt64.self)
+                return Float(Double(bitPattern: bitPattern))
+            }
         default:
-            let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
-            throw DecodingError.typeMismatch(Float.self, context)
+            break
         }
+        let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
+        throw DecodingError.typeMismatch(Float.self, context)
     }
     
     func decode<T>(_ type: T.Type) throws -> T where T : BinaryInteger & Decodable {

@@ -70,6 +70,9 @@ class MessagePackDecodingTests: XCTestCase {
         let data = Data(bytes: [0xCA, 0x40, 0x48, 0xF5, 0xC3])
         let type = assertTypeMismatch(try decoder.decode(Double.self, from: data))
         XCTAssertTrue(type is Double.Type)
+        decoder.nonMatchingFloatDecodingStrategy = .cast
+        let value = try! decoder.decode(Double.self, from: data)
+        XCTAssertEqual(value, 3.14, accuracy: 1e-6)
     }
     
     func testDecodeDouble() {
@@ -82,6 +85,9 @@ class MessagePackDecodingTests: XCTestCase {
         let data = Data(bytes: [0xCB, 0x40, 0x09, 0x21, 0xF9, 0xF0, 0x1B, 0x86, 0x6E])
         let type = assertTypeMismatch(try decoder.decode(Float.self, from: data))
         XCTAssertTrue(type is Float.Type)
+        decoder.nonMatchingFloatDecodingStrategy = .cast
+        let value = try! decoder.decode(Float.self, from: data)
+        XCTAssertEqual(value, 3.14159)
     }
     
     func testDecodeFixedArray() {
