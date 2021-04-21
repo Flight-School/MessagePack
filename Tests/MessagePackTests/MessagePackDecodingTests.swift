@@ -10,7 +10,7 @@ class MessagePackDecodingTests: XCTestCase {
 
     func assertTypeMismatch<T>(_ expression: @autoclosure () throws -> T,
                                _ message: @autoclosure () -> String = "",
-                               file: StaticString = #filePath,
+                               file: StaticString = #file,
                                line: UInt = #line) -> Any.Type? {
         var error: Error?
         XCTAssertThrowsError(expression, message,
@@ -158,7 +158,7 @@ class MessagePackDecodingTests: XCTestCase {
         ("testDecodeFloat", testDecodeFloat),
         ("testDecodeFloatToDouble", testDecodeFloatToDouble),
         ("testDecodeDouble", testDecodeDouble),
-        ("testDecodeFloatToDouble", testDecodeFloatToDouble),
+        ("testDecodeDoubleToFloat", testDecodeDoubleToFloat),
         ("testDecodeFixedArray", testDecodeFixedArray),
         ("testDecodeFixedDictionary", testDecodeFixedDictionary),
         ("testDecodeData", testDecodeData),
