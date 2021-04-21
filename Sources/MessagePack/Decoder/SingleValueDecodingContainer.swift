@@ -44,7 +44,7 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         case 0xc3: return true
         default:
             let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
-            throw DecodingError.typeMismatch(Double.self, context)
+            throw DecodingError.typeMismatch(Bool.self, context)
         }
     }
     
@@ -61,8 +61,7 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         case 0xdb:
             length = Int(try read(UInt32.self))
         default:
-            let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
-            throw DecodingError.typeMismatch(Double.self, context)
+            throw DecodingError.dataCorruptedError(in: self, debugDescription: "Invalid format for String length: \(format)")
         }
         
         let data = try read(length)
@@ -102,7 +101,7 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
             return Float(bitPattern: bitPattern)
         default:
             let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
-            throw DecodingError.typeMismatch(Double.self, context)
+            throw DecodingError.typeMismatch(Float.self, context)
         }
     }
     
@@ -166,7 +165,7 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
             seconds = TimeInterval(try read(Int64.self))
         default:
             let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
-            throw DecodingError.typeMismatch(Double.self, context)
+            throw DecodingError.typeMismatch(Date.self, context)
         }
         
         let timeInterval = TimeInterval(seconds) + nanoseconds / Double(NSEC_PER_SEC)
@@ -185,8 +184,7 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         case 0xc6:
             length = Int(try read(UInt32.self))
         default:
-            let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
-            throw DecodingError.typeMismatch(UInt.self, context)
+            throw DecodingError.dataCorruptedError(in: self, debugDescription: "Invalid format for Data length: \(format)")
         }
         
         return self.data.subdata(in: self.index..<self.index.advanced(by: length))
