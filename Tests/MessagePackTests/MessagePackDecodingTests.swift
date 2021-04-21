@@ -7,6 +7,22 @@ class MessagePackDecodingTests: XCTestCase {
     override func setUp() {
         self.decoder = MessagePackDecoder()
     }
+
+    func assertTypeMismatch<T>(_ expression: @autoclosure () throws -> T,
+                               _ message: @autoclosure () -> String = "",
+                               file: StaticString = #filePath,
+                               line: UInt = #line) -> Any.Type? {
+        var error: Error?
+        XCTAssertThrowsError(expression, message,
+                             file: file, line: line) {
+            error = $0
+        }
+        guard case .typeMismatch(let type, _) = error as? DecodingError else {
+            XCTFail(file: file, line: line)
+            return nil
+        }
+        return type
+    }
     
     func testDecodeNil() {
         let data = Data(bytes: [0xC0])
@@ -49,11 +65,23 @@ class MessagePackDecodingTests: XCTestCase {
         let value = try! decoder.decode(Float.self, from: data)
         XCTAssertEqual(value, 3.14)
     }
+
+    func testDecodeFloatToDouble() {
+        let data = Data(bytes: [0xCA, 0x40, 0x48, 0xF5, 0xC3])
+        let type = assertTypeMismatch(try decoder.decode(Double.self, from: data))
+        XCTAssertTrue(type is Double.Type)
+    }
     
     func testDecodeDouble() {
         let data = Data(bytes: [0xCB, 0x40, 0x09, 0x21, 0xF9, 0xF0, 0x1B, 0x86, 0x6E])
         let value = try! decoder.decode(Double.self, from: data)
         XCTAssertEqual(value, 3.14159)
+    }
+
+    func testDecodeDoubleToFloat() {
+        let data = Data(bytes: [0xCB, 0x40, 0x09, 0x21, 0xF9, 0xF0, 0x1B, 0x86, 0x6E])
+        let type = assertTypeMismatch(try decoder.decode(Float.self, from: data))
+        XCTAssertTrue(type is Float.Type)
     }
     
     func testDecodeFixedArray() {
@@ -122,7 +150,9 @@ class MessagePackDecodingTests: XCTestCase {
         ("testDecodeInt", testDecodeInt),
         ("testDecodeUInt", testDecodeUInt),
         ("testDecodeFloat", testDecodeFloat),
+        ("testDecodeFloatToDouble", testDecodeFloatToDouble),
         ("testDecodeDouble", testDecodeDouble),
+        ("testDecodeFloatToDouble", testDecodeFloatToDouble),
         ("testDecodeFixedArray", testDecodeFixedArray),
         ("testDecodeFixedDictionary", testDecodeFixedDictionary),
         ("testDecodeData", testDecodeData),

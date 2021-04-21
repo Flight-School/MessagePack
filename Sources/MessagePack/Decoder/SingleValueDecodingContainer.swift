@@ -76,9 +76,6 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
     func decode(_ type: Double.Type) throws -> Double {
         let format = try readByte()
         switch format {
-        case 0xca:
-            let bitPattern = try read(UInt32.self)
-            return Double(bitPattern: UInt64(bitPattern))
         case 0xcb:
             let bitPattern = try read(UInt64.self)
             return Double(bitPattern: bitPattern)
@@ -93,11 +90,6 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         switch format {
         case 0xca:
             let bitPattern = try read(UInt32.self)
-            return Float(bitPattern: bitPattern)
-        case 0xcb:
-            guard let bitPattern = UInt32(exactly: try read(UInt32.self)) else {
-                fallthrough
-            }
             return Float(bitPattern: bitPattern)
         default:
             let context = DecodingError.Context(codingPath: self.codingPath, debugDescription: "Invalid format: \(format)")
