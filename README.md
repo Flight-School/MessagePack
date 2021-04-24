@@ -62,7 +62,7 @@ You can install `MessagePack` via CocoaPods,
 by adding the following line to your `Podfile`:
 
 ```ruby
-pod 'MessagePack-FlightSchool', '~> 1.2.3'
+pod 'MessagePack-FlightSchool', '~> 1.2.4'
 ```
 
 Run the `pod install` command to download the library

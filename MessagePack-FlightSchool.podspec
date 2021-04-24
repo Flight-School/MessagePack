@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
     s.name = 'MessagePack-FlightSchool'
     s.module_name  = 'MessagePack'
-    s.version      = '1.2.3'
+    s.version      = '1.2.4'
     s.summary      = 'A MessagePack encoder and decoder for Codable types.'
 
     s.description  = <<-DESC
