@@ -26,6 +26,7 @@ final public class MessagePackDecoder {
     public func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable {
         let decoder = _MessagePackDecoder(data: data)
         decoder.userInfo = self.userInfo
+        decoder.userInfo[MessagePackDecoder.nonMatchingFloatDecodingStrategyKey] = nonMatchingFloatDecodingStrategy
         
         switch type {
         case is Data.Type:
@@ -37,6 +38,27 @@ final public class MessagePackDecoder {
         default:
             return try T(from: decoder)
         }
+    }
+
+    /**
+     The strategy used by a decoder when it encounters format mismatches for floating point values.
+     */
+    public var nonMatchingFloatDecodingStrategy: NonMatchingFloatDecodingStrategy = .strict
+
+    /**
+     The strategies for decoding floating point values when their format doesn't match.
+     */
+    public enum NonMatchingFloatDecodingStrategy {
+
+        /// Throws a DecodingError.typeMismatch
+        case strict
+
+        /// Performs a cast
+        case cast
+    }
+
+    internal static var nonMatchingFloatDecodingStrategyKey: CodingUserInfoKey {
+        return CodingUserInfoKey(rawValue: "nonMatchingFloatDecodingStrategyKey")!
     }
 }
 
