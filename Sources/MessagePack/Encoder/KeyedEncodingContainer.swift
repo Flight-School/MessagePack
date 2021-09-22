@@ -1,19 +1,41 @@
 import Foundation
 
+protocol KeyedStorage {
+    var keyStorage: KeyStorage { get }
+}
+
+class KeyStorage {
+    var values: [AnyCodingKey: _MessagePackEncodingContainer] = [:]
+
+    var codingPath: [CodingKey] = []
+    var userInfo: [CodingUserInfoKey: Any] = [:]
+}
+
 extension _MessagePackEncoder {
-    final class KeyedContainer<Key> where Key: CodingKey {
-        private var storage: [AnyCodingKey: _MessagePackEncodingContainer] = [:]
-        
-        var codingPath: [CodingKey]
-        var userInfo: [CodingUserInfoKey: Any]
-        
-        func nestedCodingPath(forKey key: CodingKey) -> [CodingKey] {
-            return self.codingPath + [key]
+    final class KeyedContainer<Key>: KeyedStorage where Key: CodingKey {
+        internal var keyStorage = KeyStorage()
+        var codingPath: [CodingKey] {
+            get {
+                keyStorage.codingPath
+            }
+
+            set {
+                keyStorage.codingPath = newValue
+            }
         }
+
+        func nestedCodingPath(forKey key: CodingKey) -> [CodingKey] {
+            return self.keyStorage.codingPath + [key]
+        }
+
         
         init(codingPath: [CodingKey], userInfo: [CodingUserInfoKey : Any]) {
-            self.codingPath = codingPath
-            self.userInfo = userInfo
+            self.keyStorage.codingPath = codingPath
+            self.keyStorage.userInfo = userInfo
+        }
+
+        init(keyStorage: KeyStorage) {
+            self.keyStorage = keyStorage
         }
     }
 }
@@ -30,21 +52,21 @@ extension _MessagePackEncoder.KeyedContainer: KeyedEncodingContainerProtocol {
     }
     
     private func nestedSingleValueContainer(forKey key: Key) -> SingleValueEncodingContainer {
-        let container = _MessagePackEncoder.SingleValueContainer(codingPath: self.nestedCodingPath(forKey: key), userInfo: self.userInfo)
-        self.storage[AnyCodingKey(key)] = container
+        let container = _MessagePackEncoder.SingleValueContainer(codingPath: self.nestedCodingPath(forKey: key), userInfo: self.keyStorage.userInfo)
+        self.keyStorage.values[AnyCodingKey(key)] = container
         return container
     }
     
     func nestedUnkeyedContainer(forKey key: Key) -> UnkeyedEncodingContainer {
-        let container = _MessagePackEncoder.UnkeyedContainer(codingPath: self.nestedCodingPath(forKey: key), userInfo: self.userInfo)
-        self.storage[AnyCodingKey(key)] = container
+        let container = _MessagePackEncoder.UnkeyedContainer(codingPath: self.nestedCodingPath(forKey: key), userInfo: self.keyStorage.userInfo)
+        self.keyStorage.values[AnyCodingKey(key)] = container
 
         return container
     }
     
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
-        let container = _MessagePackEncoder.KeyedContainer<NestedKey>(codingPath: self.nestedCodingPath(forKey: key), userInfo: self.userInfo)
-        self.storage[AnyCodingKey(key)] = container
+        let container = _MessagePackEncoder.KeyedContainer<NestedKey>(codingPath: self.nestedCodingPath(forKey: key), userInfo: self.keyStorage.userInfo)
+        self.keyStorage.values[AnyCodingKey(key)] = container
 
         return KeyedEncodingContainer(container)
     }
@@ -62,7 +84,7 @@ extension _MessagePackEncoder.KeyedContainer: _MessagePackEncodingContainer {
     var data: Data {
         var data = Data()
         
-        let length = storage.count
+        let length = keyStorage.values.count
         if let uint16 = UInt16(exactly: length) {
             if length <= 15 {
                 data.append(0x80 + UInt8(length))
@@ -77,8 +99,8 @@ extension _MessagePackEncoder.KeyedContainer: _MessagePackEncodingContainer {
             fatalError()
         }
         
-        for (key, container) in self.storage {
-            let keyContainer = _MessagePackEncoder.SingleValueContainer(codingPath: self.codingPath, userInfo: self.userInfo)
+        for (key, container) in self.keyStorage.values {
+            let keyContainer = _MessagePackEncoder.SingleValueContainer(codingPath: self.codingPath, userInfo: self.keyStorage.userInfo)
             try! keyContainer.encode(key.stringValue)
             data.append(keyContainer.data)
             

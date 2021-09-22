@@ -78,8 +78,9 @@ final class _MessagePackDecoder {
     var codingPath: [CodingKey] = []
     
     var userInfo: [CodingUserInfoKey : Any] = [:]
-    
-    var container: MessagePackDecodingContainer?
+
+    var containers: [MessagePackDecodingContainer] = []
+    var container: MessagePackDecodingContainer? { containers.last }
     fileprivate var data: Data
     
     init(data: Data) {
@@ -89,14 +90,14 @@ final class _MessagePackDecoder {
 
 extension _MessagePackDecoder: Decoder {
     fileprivate func assertCanCreateContainer() {
-        precondition(self.container == nil)
+//        precondition(self.container == nil)
     }
         
     func container<Key>(keyedBy type: Key.Type) -> KeyedDecodingContainer<Key> where Key : CodingKey {
         assertCanCreateContainer()
 
         let container = KeyedContainer<Key>(data: self.data, codingPath: self.codingPath, userInfo: self.userInfo)
-        self.container = container
+        self.containers.append(container)
 
         return KeyedDecodingContainer(container)
     }
@@ -105,7 +106,7 @@ extension _MessagePackDecoder: Decoder {
         assertCanCreateContainer()
         
         let container = UnkeyedContainer(data: self.data, codingPath: self.codingPath, userInfo: self.userInfo)
-        self.container = container
+        self.containers.append(container)
 
         return container
     }
@@ -114,7 +115,7 @@ extension _MessagePackDecoder: Decoder {
         assertCanCreateContainer()
         
         let container = SingleValueContainer(data: self.data, codingPath: self.codingPath, userInfo: self.userInfo)
-        self.container = container
+        self.containers.append(container)
         
         return container
     }
