@@ -3,21 +3,28 @@ import Foundation
 extension _MessagePackEncoder {
     final class SingleValueContainer {
         private var storage: Data = Data()
-        
+        var keyStorage: KeyStorage = KeyStorage()
+        var codingPath: [CodingKey] {
+            get {
+                keyStorage.codingPath
+            }
+
+            set {
+                keyStorage.codingPath = newValue
+            }
+        }
+
         fileprivate var canEncodeNewValue = true
         fileprivate func checkCanEncode(value: Any?) throws {
             guard self.canEncodeNewValue else {
-                let context = EncodingError.Context(codingPath: self.codingPath, debugDescription: "Attempt to encode value through single value container when previously value already encoded.")
+                let context = EncodingError.Context(codingPath: self.keyStorage.codingPath, debugDescription: "Attempt to encode value through single value container when previously value already encoded.")
                 throw EncodingError.invalidValue(value as Any, context)
             }
         }
         
-        var codingPath: [CodingKey]
-        var userInfo: [CodingUserInfoKey: Any]
-        
         init(codingPath: [CodingKey], userInfo: [CodingUserInfoKey : Any]) {
-            self.codingPath = codingPath
-            self.userInfo = userInfo
+            self.keyStorage.codingPath = codingPath
+            self.keyStorage.userInfo = userInfo
         }
     }
 }

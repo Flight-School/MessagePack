@@ -3,22 +3,28 @@ import Foundation
 extension _MessagePackEncoder {
     final class UnkeyedContainer {
         private var storage: [_MessagePackEncodingContainer] = []
-        
+        internal var keyStorage = KeyStorage()
+        var codingPath: [CodingKey] {
+            get {
+                keyStorage.codingPath
+            }
+
+            set {
+                keyStorage.codingPath = newValue
+            }
+        }
+
         var count: Int {
             return storage.count
         }
-        
-        var codingPath: [CodingKey]
         
         var nestedCodingPath: [CodingKey] {
             return self.codingPath + [AnyCodingKey(intValue: self.count)!]
         }
         
-        var userInfo: [CodingUserInfoKey: Any]
-        
         init(codingPath: [CodingKey], userInfo: [CodingUserInfoKey : Any]) {
-            self.codingPath = codingPath
-            self.userInfo = userInfo
+            self.keyStorage.codingPath = codingPath
+            self.keyStorage.userInfo = userInfo
         }
     }
 }
@@ -35,21 +41,21 @@ extension _MessagePackEncoder.UnkeyedContainer: UnkeyedEncodingContainer {
     }
     
     private func nestedSingleValueContainer() -> SingleValueEncodingContainer {
-        let container = _MessagePackEncoder.SingleValueContainer(codingPath: self.nestedCodingPath, userInfo: self.userInfo)
+        let container = _MessagePackEncoder.SingleValueContainer(codingPath: self.nestedCodingPath, userInfo: self.keyStorage.userInfo)
         self.storage.append(container)
 
         return container
     }
     
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
-        let container = _MessagePackEncoder.KeyedContainer<NestedKey>(codingPath: self.nestedCodingPath, userInfo: self.userInfo)
+        let container = _MessagePackEncoder.KeyedContainer<NestedKey>(codingPath: self.nestedCodingPath, userInfo: self.keyStorage.userInfo)
         self.storage.append(container)
         
         return KeyedEncodingContainer(container)
     }
     
     func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
-        let container = _MessagePackEncoder.UnkeyedContainer(codingPath: self.nestedCodingPath, userInfo: self.userInfo)
+        let container = _MessagePackEncoder.UnkeyedContainer(codingPath: self.nestedCodingPath, userInfo: self.keyStorage.userInfo)
         self.storage.append(container)
         
         return container

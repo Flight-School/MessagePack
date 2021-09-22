@@ -49,7 +49,7 @@ extension MessagePackEncoder: TopLevelEncoder {
 
 // MARK: -
 
-protocol _MessagePackEncodingContainer {
+protocol _MessagePackEncodingContainer: KeyedStorage {
     var data: Data { get }
 }
 
@@ -71,12 +71,20 @@ extension _MessagePackEncoder: Encoder {
     }
     
     func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key : CodingKey {
-        assertCanCreateContainer()
-        
-        let container = KeyedContainer<Key>(codingPath: self.codingPath, userInfo: self.userInfo)
-        self.container = container
-        
-        return KeyedEncodingContainer(container)
+//        assertCanCreateContainer()
+
+        guard let container = container else {
+            let container = KeyedContainer<Key>(codingPath: self.codingPath, userInfo: self.userInfo)
+            self.container = container
+
+            return KeyedEncodingContainer(container)
+        }
+
+        let newContainer = KeyedContainer<Key>(keyStorage: container.keyStorage)
+        self.container = newContainer
+
+
+        return KeyedEncodingContainer(newContainer)
     }
     
     func unkeyedContainer() -> UnkeyedEncodingContainer {
