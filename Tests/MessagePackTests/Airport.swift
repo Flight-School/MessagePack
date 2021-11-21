@@ -8,16 +8,16 @@ struct Airport: Codable, Equatable {
         enum Surface: String, Codable, Equatable {
             case rigid, flexible, gravel, sealed, unpaved, other
         }
-        
+
         let direction: String
         let distance: Int
         let surface: Surface
     }
-    
+
     let runways: [Runway]
 
     let instrumentApproachProcedures: [String]
-    
+
     static var example: Airport {
         return Airport(
             name: "Portland International Airport",
