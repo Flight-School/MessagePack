@@ -29,7 +29,7 @@ let value = try! encoder.encode(["a": 1, "b": 2, "c": 3])
 import MessagePack
 
 let decoder = MessagePackDecoder()
-let data = Data(bytes: [0xCB, 0x40, 0x09, 0x21, 0xF9, 0xF0, 0x1B, 0x86, 0x6E])
+let data = Data([0xCB, 0x40, 0x09, 0x21, 0xF9, 0xF0, 0x1B, 0x86, 0x6E])
 let value = try! decoder.decode(Double.self, from: data)
 // 3.14159
 ```
