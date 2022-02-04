@@ -29,6 +29,8 @@ final public class MessagePackEncoder {
             try Box<Data>(data).encode(to: encoder)
         case let date as Date:
             try Box<Date>(date).encode(to: encoder)
+        case let url as URL:
+            try Box<URL>(url).encode(to: encoder)
         default:
             try value.encode(to: encoder)
         }

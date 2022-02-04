@@ -239,7 +239,11 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
             throw EncodingError.invalidValue(value, context)
         }
     }
-    
+
+    func encode(_ value: URL) throws {
+        try encode(value.absoluteString)
+    }
+
     func encode<T>(_ value: T) throws where T : Encodable {
         try checkCanEncode(value: value)
         defer { self.canEncodeNewValue = false }
@@ -249,6 +253,8 @@ extension _MessagePackEncoder.SingleValueContainer: SingleValueEncodingContainer
             try self.encode(data)
         case let date as Date:
             try self.encode(date)
+        case let url as URL:
+            try self.encode(url)
         default:
             let encoder = _MessagePackEncoder()
             try value.encode(to: encoder)
