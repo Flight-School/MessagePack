@@ -1,8 +1,11 @@
+import Foundation
+
 struct Airport: Codable, Equatable {
     let name: String
     let iata: String
     let icao: String
     let coordinates: [Double]
+    let website: URL
 
     struct Runway: Codable, Equatable {
         enum Surface: String, Codable, Equatable {
@@ -25,6 +28,7 @@ struct Airport: Codable, Equatable {
             icao: "KPDX",
             coordinates: [-122.5975,
                           45.5886111111111],
+            website: URL(string: "https://www.flypdx.com")!,
             runways: [
                 Airport.Runway(
                     direction: "3/21",

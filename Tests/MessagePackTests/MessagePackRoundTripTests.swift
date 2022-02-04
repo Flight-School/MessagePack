@@ -20,6 +20,7 @@ class MessagePackRoundTripTests: XCTestCase {
         XCTAssertEqual(value.icao, decoded.icao)
         XCTAssertEqual(value.coordinates[0], decoded.coordinates[0], accuracy: 0.01)
         XCTAssertEqual(value.coordinates[1], decoded.coordinates[1], accuracy: 0.01)
+        XCTAssertEqual(value.website, decoded.website)
         XCTAssertEqual(value.runways[0].direction, decoded.runways[0].direction)
         XCTAssertEqual(value.runways[0].distance, decoded.runways[0].distance)
         XCTAssertEqual(value.runways[0].surface, decoded.runways[0].surface)

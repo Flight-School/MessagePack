@@ -203,13 +203,23 @@ extension _MessagePackDecoder.SingleValueContainer: SingleValueDecodingContainer
         
         return self.data.subdata(in: self.index..<self.index.advanced(by: length))
     }
-    
+
+    func decode(_ type: URL.Type) throws -> URL {
+        let urlStr = try decode(String.self)
+        guard let url = URL(string: urlStr) else {
+            throw DecodingError.dataCorruptedError(in: self, debugDescription: "Invalid URL: \(urlStr)")
+        }
+        return url
+    }
+
     func decode<T>(_ type: T.Type) throws -> T where T : Decodable {
         switch type {
         case is Data.Type:
             return try decode(Data.self) as! T
         case is Date.Type:
             return try decode(Date.self) as! T
+        case is URL.Type:
+            return try decode(URL.self) as! T
         default:
             let decoder = _MessagePackDecoder(data: self.data)
             let value = try T(from: decoder)

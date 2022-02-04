@@ -42,3 +42,15 @@ extension Box where Value == Date {
         try container.encode(self.value)
     }
 }
+
+extension Box where Value == URL {
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.init(try container.decode(Value.self))
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.value)
+    }
+}
