@@ -23,6 +23,7 @@ final public class MessagePackEncoder {
     public func encode<T>(_ value: T) throws -> Data where T : Encodable {
         let encoder = _MessagePackEncoder()
         encoder.userInfo = self.userInfo
+        encoder.userInfo[MessagePackEncoder.sortKeysKey] = sortKeys
         
         switch value {
         case let data as Data:
@@ -34,6 +35,15 @@ final public class MessagePackEncoder {
         }
         
         return encoder.data
+    }
+
+    /**
+     An option used by the encoder whether to sort keys while encoding keyed containers to achieve a deterministic output
+     */
+    public var sortKeys: Bool = false
+
+    internal static var sortKeysKey: CodingUserInfoKey {
+        return CodingUserInfoKey(rawValue: "sortKeysKey")!
     }
 }
 
