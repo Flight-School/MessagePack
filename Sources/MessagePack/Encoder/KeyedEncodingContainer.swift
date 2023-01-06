@@ -15,6 +15,10 @@ extension _MessagePackEncoder {
             self.codingPath = codingPath
             self.userInfo = userInfo
         }
+
+        var sortKeys: Bool {
+            return userInfo[MessagePackEncoder.sortKeysKey] as? Bool ?? false
+        }
     }
 }
 
@@ -77,7 +81,12 @@ extension _MessagePackEncoder.KeyedContainer: _MessagePackEncodingContainer {
             fatalError()
         }
         
-        for (key, container) in self.storage {
+        var storageToEncode = Array(self.storage)
+        if sortKeys {
+            storageToEncode.sort { $0.key.stringValue < $1.key.stringValue }
+        }
+
+        for (key, container) in storageToEncode {
             let keyContainer = _MessagePackEncoder.SingleValueContainer(codingPath: self.codingPath, userInfo: self.userInfo)
             try! keyContainer.encode(key.stringValue)
             data.append(keyContainer.data)

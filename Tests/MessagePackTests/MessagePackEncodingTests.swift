@@ -6,6 +6,7 @@ class MessagePackEncodingTests: XCTestCase {
     
     override func setUp() {
         self.encoder = MessagePackEncoder()
+        self.encoder.sortKeys = true
     }
     
     func testEncodeNil() {
@@ -59,16 +60,43 @@ class MessagePackEncodingTests: XCTestCase {
     }
     
     func testEncodeFixedDictionary() {
-        let value = try! encoder.encode(["a": 1])
-        XCTAssertEqual(value, Data(bytes: [0x81, 0xA1, 0x61, 0x01]))
+        let value = try! encoder.encode(["a": 1, "b": 2])
+        XCTAssertEqual(value, Data(bytes: [0x82, 0xA1, 0x61, 0x01, 0xA1, 0x62, 0x02]))
     }
 
     func testEncodeVariableDictionary() {
         let letters = "abcdefghijklmnopqrstuvwxyz".unicodeScalars
         let dictionary = Dictionary(uniqueKeysWithValues: zip(letters.map { String($0) }, 1...26))
         let value = try! encoder.encode(dictionary)
-        XCTAssertEqual(value.count, 81)
-        XCTAssert(value.starts(with: [0xde] + [0x00, 0x1A]))
+        XCTAssertEqual(value, Data(bytes: [
+            0xDE, 0x0, 0x1A,
+            0xA1, 0x61, 0x1,
+            0xA1, 0x62, 0x2,
+            0xA1, 0x63, 0x3,
+            0xA1, 0x64, 0x4,
+            0xA1, 0x65, 0x5,
+            0xA1, 0x66, 0x6,
+            0xA1, 0x67, 0x7,
+            0xA1, 0x68, 0x8,
+            0xA1, 0x69, 0x9,
+            0xA1, 0x6A, 0xA,
+            0xA1, 0x6B, 0xB,
+            0xA1, 0x6C, 0xC,
+            0xA1, 0x6D, 0xD,
+            0xA1, 0x6E, 0xE,
+            0xA1, 0x6F, 0xF,
+            0xA1, 0x70, 0x10,
+            0xA1, 0x71, 0x11,
+            0xA1, 0x72, 0x12,
+            0xA1, 0x73, 0x13,
+            0xA1, 0x74, 0x14,
+            0xA1, 0x75, 0x15,
+            0xA1, 0x76, 0x16,
+            0xA1, 0x77, 0x17,
+            0xA1, 0x78, 0x18,
+            0xA1, 0x79, 0x19,
+            0xA1, 0x7A, 0x1A
+        ]))
     }
     
     func testEncodeData() {
